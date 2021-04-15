@@ -31,3 +31,7 @@
 /src/android/resources/res
 /src/android/tests/AndroidManifest.xml
 /src/android/tests/libs/
+
+/src/android/.idea/
+/src/android/src/android.iml
+/src/android/tests/tests.iml

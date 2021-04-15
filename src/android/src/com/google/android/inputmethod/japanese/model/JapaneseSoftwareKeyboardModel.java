@@ -95,10 +95,10 @@ public class JapaneseSoftwareKeyboardModel {
 
   private static final KeyboardMode DEFAULT_KEYBOARD_MODE = KeyboardMode.KANA;
 
-  private KeyboardLayout keyboardLayout = KeyboardLayout.TWELVE_KEYS;
+  private KeyboardLayout keyboardLayout = KeyboardLayout.QWERTY;
   private KeyboardMode keyboardMode = DEFAULT_KEYBOARD_MODE;
   private InputStyle inputStyle = InputStyle.TOGGLE;
-  private boolean qwertyLayoutForAlphabet = false;
+  private boolean qwertyLayoutForAlphabet = true;
   private int inputType;
 
   // This is just saved mode for setInputType. So, after that when qwertyLayoutForAlphabet is

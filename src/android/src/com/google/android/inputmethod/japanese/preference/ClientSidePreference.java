@@ -144,17 +144,17 @@ public class ClientSidePreference {
     Preconditions.checkNotNull(sharedPreferences);
 
     isHapticFeedbackEnabled =
-        sharedPreferences.getBoolean(PreferenceUtil.PREF_HAPTIC_FEEDBACK_KEY, false);
+        sharedPreferences.getBoolean(org.mozc.android.inputmethod.japanese.preference.PreferenceUtil.PREF_HAPTIC_FEEDBACK_KEY, false);
     hapticFeedbackDuration =
-        sharedPreferences.getInt(PreferenceUtil.PREF_HAPTIC_FEEDBACK_DURATION_KEY, 30);
+        sharedPreferences.getInt(org.mozc.android.inputmethod.japanese.preference.PreferenceUtil.PREF_HAPTIC_FEEDBACK_DURATION_KEY, 30);
     isSoundFeedbackEnabled =
-        sharedPreferences.getBoolean(PreferenceUtil.PREF_SOUND_FEEDBACK_KEY, false);
+        sharedPreferences.getBoolean(org.mozc.android.inputmethod.japanese.preference.PreferenceUtil.PREF_SOUND_FEEDBACK_KEY, false);
     soundFeedbackVolume =
-        sharedPreferences.getInt(PreferenceUtil.PREF_SOUND_FEEDBACK_VOLUME_KEY, 50);
+        sharedPreferences.getInt(org.mozc.android.inputmethod.japanese.preference.PreferenceUtil.PREF_SOUND_FEEDBACK_VOLUME_KEY, 50);
     isPopupFeedbackEnabled =
-        sharedPreferences.getBoolean(PreferenceUtil.PREF_POPUP_FEEDBACK_KEY, true);
+        sharedPreferences.getBoolean(org.mozc.android.inputmethod.japanese.preference.PreferenceUtil.PREF_POPUP_FEEDBACK_KEY, true);
     isMicrophoneButtonEnabled =
-        sharedPreferences.getBoolean(PreferenceUtil.PREF_VOICE_INPUT_KEY, true);
+        sharedPreferences.getBoolean(org.mozc.android.inputmethod.japanese.preference.PreferenceUtil.PREF_VOICE_INPUT_KEY, true);
 
     String keyboardLayoutKey;
     String inputStyleKey;
@@ -163,35 +163,35 @@ public class ClientSidePreference {
     String layoutAdjustmentKey;
     String keyboardHeightRatioKey;
 
-    if (PreferenceUtil.isLandscapeKeyboardSettingActive(sharedPreferences, deviceOrientation)) {
-      keyboardLayoutKey = PreferenceUtil.PREF_LANDSCAPE_KEYBOARD_LAYOUT_KEY;
-      inputStyleKey = PreferenceUtil.PREF_LANDSCAPE_INPUT_STYLE_KEY;
-      qwertyLayoutForAlphabetKey = PreferenceUtil.PREF_LANDSCAPE_QWERTY_LAYOUT_FOR_ALPHABET_KEY;
-      flickSensitivityKey = PreferenceUtil.PREF_LANDSCAPE_FLICK_SENSITIVITY_KEY;
-      layoutAdjustmentKey = PreferenceUtil.PREF_LANDSCAPE_LAYOUT_ADJUSTMENT_KEY;
-      keyboardHeightRatioKey = PreferenceUtil.PREF_LANDSCAPE_KEYBOARD_HEIGHT_RATIO_KEY;
+    if (org.mozc.android.inputmethod.japanese.preference.PreferenceUtil.isLandscapeKeyboardSettingActive(sharedPreferences, deviceOrientation)) {
+      keyboardLayoutKey = org.mozc.android.inputmethod.japanese.preference.PreferenceUtil.PREF_LANDSCAPE_KEYBOARD_LAYOUT_KEY;
+      inputStyleKey = org.mozc.android.inputmethod.japanese.preference.PreferenceUtil.PREF_LANDSCAPE_INPUT_STYLE_KEY;
+      qwertyLayoutForAlphabetKey = org.mozc.android.inputmethod.japanese.preference.PreferenceUtil.PREF_LANDSCAPE_QWERTY_LAYOUT_FOR_ALPHABET_KEY;
+      flickSensitivityKey = org.mozc.android.inputmethod.japanese.preference.PreferenceUtil.PREF_LANDSCAPE_FLICK_SENSITIVITY_KEY;
+      layoutAdjustmentKey = org.mozc.android.inputmethod.japanese.preference.PreferenceUtil.PREF_LANDSCAPE_LAYOUT_ADJUSTMENT_KEY;
+      keyboardHeightRatioKey = org.mozc.android.inputmethod.japanese.preference.PreferenceUtil.PREF_LANDSCAPE_KEYBOARD_HEIGHT_RATIO_KEY;
     } else {
-      keyboardLayoutKey = PreferenceUtil.PREF_PORTRAIT_KEYBOARD_LAYOUT_KEY;
-      inputStyleKey = PreferenceUtil.PREF_PORTRAIT_INPUT_STYLE_KEY;
-      qwertyLayoutForAlphabetKey = PreferenceUtil.PREF_PORTRAIT_QWERTY_LAYOUT_FOR_ALPHABET_KEY;
-      flickSensitivityKey = PreferenceUtil.PREF_PORTRAIT_FLICK_SENSITIVITY_KEY;
-      layoutAdjustmentKey = PreferenceUtil.PREF_PORTRAIT_LAYOUT_ADJUSTMENT_KEY;
-      keyboardHeightRatioKey = PreferenceUtil.PREF_PORTRAIT_KEYBOARD_HEIGHT_RATIO_KEY;
+      keyboardLayoutKey = org.mozc.android.inputmethod.japanese.preference.PreferenceUtil.PREF_PORTRAIT_KEYBOARD_LAYOUT_KEY;
+      inputStyleKey = org.mozc.android.inputmethod.japanese.preference.PreferenceUtil.PREF_PORTRAIT_INPUT_STYLE_KEY;
+      qwertyLayoutForAlphabetKey = org.mozc.android.inputmethod.japanese.preference.PreferenceUtil.PREF_PORTRAIT_QWERTY_LAYOUT_FOR_ALPHABET_KEY;
+      flickSensitivityKey = org.mozc.android.inputmethod.japanese.preference.PreferenceUtil.PREF_PORTRAIT_FLICK_SENSITIVITY_KEY;
+      layoutAdjustmentKey = org.mozc.android.inputmethod.japanese.preference.PreferenceUtil.PREF_PORTRAIT_LAYOUT_ADJUSTMENT_KEY;
+      keyboardHeightRatioKey = org.mozc.android.inputmethod.japanese.preference.PreferenceUtil.PREF_PORTRAIT_KEYBOARD_HEIGHT_RATIO_KEY;
     }
 
     // Don't apply pref_portrait_keyboard_settings_for_landscape for fullscreen mode.
     String fullscreenKey = (deviceOrientation == Configuration.ORIENTATION_LANDSCAPE)
-        ? PreferenceUtil.PREF_LANDSCAPE_FULLSCREEN_KEY
-        : PreferenceUtil.PREF_PORTRAIT_FULLSCREEN_KEY;
+        ? org.mozc.android.inputmethod.japanese.preference.PreferenceUtil.PREF_LANDSCAPE_FULLSCREEN_KEY
+        : org.mozc.android.inputmethod.japanese.preference.PreferenceUtil.PREF_PORTRAIT_FULLSCREEN_KEY;
 
-    keyboardLayout = PreferenceUtil.getEnum(
+    keyboardLayout = org.mozc.android.inputmethod.japanese.preference.PreferenceUtil.getEnum(
         sharedPreferences, keyboardLayoutKey,
-        KeyboardLayout.class, KeyboardLayout.TWELVE_KEYS, KeyboardLayout.GODAN);
-    inputStyle = PreferenceUtil.getEnum(
+        KeyboardLayout.class, KeyboardLayout.QWERTY, KeyboardLayout.QWERTY);
+    inputStyle = org.mozc.android.inputmethod.japanese.preference.PreferenceUtil.getEnum(
         sharedPreferences, inputStyleKey,
         InputStyle.class, InputStyle.TOGGLE_FLICK);
     qwertyLayoutForAlphabet =
-        sharedPreferences.getBoolean(qwertyLayoutForAlphabetKey, false);
+        sharedPreferences.getBoolean(qwertyLayoutForAlphabetKey, true);
     // On large screen device, pref_portrait_fullscreen_key and
     // pref_landscape_fullscreen_key are omitted
     // so below default value "false" is applied.
@@ -199,17 +199,17 @@ public class ClientSidePreference {
         sharedPreferences.getBoolean(fullscreenKey, false);
     flickSensitivity = sharedPreferences.getInt(flickSensitivityKey, 0);
 
-    emojiProviderType = PreferenceUtil.getEnum(
-        sharedPreferences, PreferenceUtil.PREF_EMOJI_PROVIDER_TYPE, EmojiProviderType.class,
+    emojiProviderType = org.mozc.android.inputmethod.japanese.preference.PreferenceUtil.getEnum(
+        sharedPreferences, org.mozc.android.inputmethod.japanese.preference.PreferenceUtil.PREF_EMOJI_PROVIDER_TYPE, EmojiProviderType.class,
         EmojiProviderType.NONE);
 
-    hardwareKeyMap = PreferenceUtil.getEnum(
-        sharedPreferences, PreferenceUtil.PREF_HARDWARE_KEYMAP, HardwareKeyMap.class,
+    hardwareKeyMap = org.mozc.android.inputmethod.japanese.preference.PreferenceUtil.getEnum(
+        sharedPreferences, org.mozc.android.inputmethod.japanese.preference.PreferenceUtil.PREF_HARDWARE_KEYMAP, HardwareKeyMap.class,
         HardwareKeyMap.DEFAULT);
-    skinType = PreferenceUtil.getEnum(
+    skinType = org.mozc.android.inputmethod.japanese.preference.PreferenceUtil.getEnum(
         sharedPreferences, resources.getString(R.string.pref_skin_type_key),
         SkinType.class, SkinType.valueOf(resources.getString(R.string.pref_skin_type_default)));
-    layoutAdjustment = PreferenceUtil.getEnum(
+    layoutAdjustment = org.mozc.android.inputmethod.japanese.preference.PreferenceUtil.getEnum(
         sharedPreferences, layoutAdjustmentKey, LayoutAdjustment.class, LayoutAdjustment.FILL);
     keyboardHeightRatio = sharedPreferences.getInt(keyboardHeightRatioKey, 100);
   }
