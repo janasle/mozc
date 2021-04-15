@@ -79,6 +79,7 @@ import android.widget.CompoundButton;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.EnumSet;
 
@@ -89,7 +90,7 @@ import javax.annotation.Nullable;
  * It is expected that instance methods are used after inflation is done.
  *
  */
-public class MozcView extends FrameLayout implements MemoryManageable {
+public class MozcView extends FrameLayout implements org.mozc.android.inputmethod.japanese.MemoryManageable {
 
   @VisibleForTesting
   static class DimensionPixelSize {
@@ -138,12 +139,12 @@ public class MozcView extends FrameLayout implements MemoryManageable {
     private final Interpolator foldKeyboardViewInterpolator;
     private final long expandDuration;
     private final Interpolator expandKeyboardViewInterpolator;
-    private final LayoutParamsAnimator layoutParamsAnimator;
+    private final org.mozc.android.inputmethod.japanese.LayoutParamsAnimator layoutParamsAnimator;
     InputFrameFoldButtonClickListener(
         View keyboardView, int originalHeight,
         long foldDuration, Interpolator foldKeyboardViewInterpolator,
         long expandDuration, Interpolator expandKeyboardViewInterpolator,
-        LayoutParamsAnimator layoutParamsAnimator) {
+        org.mozc.android.inputmethod.japanese.LayoutParamsAnimator layoutParamsAnimator) {
       this.keyboardView = keyboardView;
       this.originalHeight = originalHeight;
       this.foldDuration = foldDuration;
@@ -196,8 +197,8 @@ public class MozcView extends FrameLayout implements MemoryManageable {
   }
 
   @VisibleForTesting
-  final InOutAnimatedFrameLayout.VisibilityChangeListener onVisibilityChangeListener =
-      new InOutAnimatedFrameLayout.VisibilityChangeListener() {
+  final org.mozc.android.inputmethod.japanese.InOutAnimatedFrameLayout.VisibilityChangeListener onVisibilityChangeListener =
+      new org.mozc.android.inputmethod.japanese.InOutAnimatedFrameLayout.VisibilityChangeListener() {
         @Override
         public void onVisibilityChange() {
           updateInputFrameHeight();
@@ -214,7 +215,8 @@ public class MozcView extends FrameLayout implements MemoryManageable {
   private final SideFrameStubProxy leftFrameStubProxy = new SideFrameStubProxy();
   private final SideFrameStubProxy rightFrameStubProxy = new SideFrameStubProxy();
 
-  @VisibleForTesting ViewEventListener viewEventListener;
+  @VisibleForTesting
+  org.mozc.android.inputmethod.japanese.ViewEventListener viewEventListener;
   @VisibleForTesting boolean fullscreenMode = false;
   @VisibleForTesting boolean narrowMode = false;
   private boolean buttonFrameVisible = true;
@@ -227,7 +229,8 @@ public class MozcView extends FrameLayout implements MemoryManageable {
   @VisibleForTesting Animation symbolInputViewOutAnimation;
   @VisibleForTesting SoftwareKeyboardHeightListener softwareKeyboardHeightListener =
       new SoftwareKeyboardHeightListener();
-  @VisibleForTesting CandidateViewManager candidateViewManager;
+  @VisibleForTesting
+  org.mozc.android.inputmethod.japanese.CandidateViewManager candidateViewManager;
   @VisibleForTesting boolean allowFloatingCandidateMode;
 
   public MozcView(Context context) {
@@ -255,9 +258,9 @@ public class MozcView extends FrameLayout implements MemoryManageable {
                                    R.id.stub_right_frame, R.id.right_adjust_button,
                                    R.raw.adjust_arrow_right);
 
-    candidateViewManager = new CandidateViewManager(
+    candidateViewManager = new org.mozc.android.inputmethod.japanese.CandidateViewManager(
         getKeyboardCandidateView(),
-        FloatingCandidateView.class.cast(findViewById(R.id.floating_candidate_view)));
+        org.mozc.android.inputmethod.japanese.FloatingCandidateView.class.cast(findViewById(R.id.floating_candidate_view)));
   }
 
   private InputFrameFoldButtonClickListener createFoldButtonListener(View view, int height) {
@@ -273,21 +276,21 @@ public class MozcView extends FrameLayout implements MemoryManageable {
 
     return new InputFrameFoldButtonClickListener(
         view, height, resources.getInteger(R.integer.input_frame_fold_duration),
-        SequentialInterpolator.newBuilder()
+        org.mozc.android.inputmethod.japanese.SequentialInterpolator.newBuilder()
             .add(new DecelerateInterpolator(),
                 foldOvershootDurationRate, -foldOvershootRate / 1e6f)
             .add(new AccelerateInterpolator(), 1e6f - foldOvershootDurationRate, 1)
             .build(),
         resources.getInteger(R.integer.input_frame_expand_duration),
-        SequentialInterpolator.newBuilder()
+        org.mozc.android.inputmethod.japanese.SequentialInterpolator.newBuilder()
             .add(new DecelerateInterpolator(),
                 expandOvershootDurationRate, 1 + expandOvershootRate / 1e6f)
             .add(new AccelerateDecelerateInterpolator(), 1e6f - expandOvershootDurationRate, 1)
             .build(),
-        new LayoutParamsAnimator(new Handler(Looper.myLooper())));
+        new org.mozc.android.inputmethod.japanese.LayoutParamsAnimator(new Handler(Looper.myLooper())));
   }
 
-  public void setEventListener(final ViewEventListener viewEventListener,
+  public void setEventListener(final org.mozc.android.inputmethod.japanese.ViewEventListener viewEventListener,
                                OnClickListener widenButtonClickListener,
                                OnClickListener leftAdjustButtonClickListener,
                                OnClickListener rightAdjustButtonClickListener,
@@ -395,6 +398,7 @@ public class MozcView extends FrameLayout implements MemoryManageable {
 
   @SuppressWarnings("deprecation")
   public void setSkin(Skin skin) {
+    org.mozc.android.inputmethod.japanese.MozcLog.d("JAK MozcView setting skin " + skin + "\n" + Arrays.asList(Thread.currentThread().getStackTrace()));
     Preconditions.checkNotNull(skin);
     checkInflated();
     this.skin = skin;
@@ -476,7 +480,7 @@ public class MozcView extends FrameLayout implements MemoryManageable {
     candidateViewManager.reset();
 
     // Reset symbol input view visibility. Set Visibility directly (without animation).
-    SymbolInputView symbolInputView = getSymbolInputView();
+    org.mozc.android.inputmethod.japanese.SymbolInputView symbolInputView = getSymbolInputView();
     symbolInputView.clearAnimation();
     symbolInputView.setVisibility(View.GONE);
 
@@ -498,7 +502,7 @@ public class MozcView extends FrameLayout implements MemoryManageable {
       return;
     }
 
-    SymbolInputView symbolInputView = getSymbolInputView();
+    org.mozc.android.inputmethod.japanese.SymbolInputView symbolInputView = getSymbolInputView();
     View keyboardFrame;
     int keyboardFrameHeight;
     if (symbolInputView.isInflated() && symbolInputView.getVisibility() == View.VISIBLE) {
@@ -532,15 +536,15 @@ public class MozcView extends FrameLayout implements MemoryManageable {
     Preconditions.checkNotNull(category);
     checkInflated();
 
-    SymbolInputView view = getSymbolInputView();
+    org.mozc.android.inputmethod.japanese.SymbolInputView view = getSymbolInputView();
     if (view.getVisibility() == View.VISIBLE) {
       return false;
     }
 
     if (!view.isInflated()) {
       view.inflateSelf();
-      CandidateView numberCandidateView =
-          CandidateView.class.cast(view.findViewById(R.id.candidate_view_in_symbol_view));
+      org.mozc.android.inputmethod.japanese.CandidateView numberCandidateView =
+          org.mozc.android.inputmethod.japanese.CandidateView.class.cast(view.findViewById(R.id.candidate_view_in_symbol_view));
       numberCandidateView.setInputFrameFoldButtonOnClickListener(createFoldButtonListener(
           getNumberKeyboardFrame(), view.getNumberKeyboardHeight()));
       candidateViewManager.setNumberCandidateView(numberCandidateView);
@@ -556,7 +560,7 @@ public class MozcView extends FrameLayout implements MemoryManageable {
   public boolean hideSymbolInputView() {
     checkInflated();
 
-    SymbolInputView view = getSymbolInputView();
+    org.mozc.android.inputmethod.japanese.SymbolInputView view = getSymbolInputView();
     if (view.getVisibility() != View.VISIBLE) {
       return false;
     }
@@ -646,7 +650,7 @@ public class MozcView extends FrameLayout implements MemoryManageable {
       getOverlayView().setVisibility(View.VISIBLE);
       setLayoutHeight(getTextInputFrame(), LayoutParams.MATCH_PARENT);
       candidateViewManager.setOnVisibilityChangeListener(
-          Optional.<InOutAnimatedFrameLayout.VisibilityChangeListener>absent());
+          Optional.<org.mozc.android.inputmethod.japanese.InOutAnimatedFrameLayout.VisibilityChangeListener>absent());
       getSymbolInputView().setOnVisibilityChangeListener(null);
     }
     candidateViewManager.setExtractedMode(fullscreenMode);
@@ -843,7 +847,7 @@ public class MozcView extends FrameLayout implements MemoryManageable {
           getResources(), imeWindowHeight, inputFrameHeight);
     }
 
-    SymbolInputView symbolInputView = getSymbolInputView();
+    org.mozc.android.inputmethod.japanese.SymbolInputView symbolInputView = getSymbolInputView();
     {
       long duration = getResources().getInteger(R.integer.symbol_input_transition_duration);
       float fromAlpha = 0.3f;
@@ -856,7 +860,7 @@ public class MozcView extends FrameLayout implements MemoryManageable {
     }
 
     if (symbolInputView.isInflated()) {
-      CandidateView numberCandidateView = CandidateView.class.cast(
+      org.mozc.android.inputmethod.japanese.CandidateView numberCandidateView = org.mozc.android.inputmethod.japanese.CandidateView.class.cast(
           symbolInputView.findViewById(R.id.candidate_view_in_symbol_view));
       numberCandidateView.setInputFrameFoldButtonOnClickListener(createFoldButtonListener(
           getNumberKeyboardFrame(), symbolInputView.getNumberKeyboardHeight()));
@@ -912,13 +916,13 @@ public class MozcView extends FrameLayout implements MemoryManageable {
     return KeyboardView.class.cast(findViewById(R.id.keyboard_view));
   }
 
-  private CandidateView getKeyboardCandidateView() {
-    return CandidateView.class.cast(findViewById(R.id.candidate_view));
+  private org.mozc.android.inputmethod.japanese.CandidateView getKeyboardCandidateView() {
+    return org.mozc.android.inputmethod.japanese.CandidateView.class.cast(findViewById(R.id.candidate_view));
   }
 
   @VisibleForTesting
-  SymbolInputView getSymbolInputView() {
-    return SymbolInputView.class.cast(findViewById(R.id.symbol_input_view));
+  org.mozc.android.inputmethod.japanese.SymbolInputView getSymbolInputView() {
+    return org.mozc.android.inputmethod.japanese.SymbolInputView.class.cast(findViewById(R.id.symbol_input_view));
   }
 
   @VisibleForTesting
@@ -932,8 +936,8 @@ public class MozcView extends FrameLayout implements MemoryManageable {
   }
 
   @VisibleForTesting
-  NarrowFrameView getNarrowFrame() {
-    return NarrowFrameView.class.cast(findViewById(R.id.narrow_frame));
+  org.mozc.android.inputmethod.japanese.NarrowFrameView getNarrowFrame() {
+    return org.mozc.android.inputmethod.japanese.NarrowFrameView.class.cast(findViewById(R.id.narrow_frame));
   }
 
   @VisibleForTesting

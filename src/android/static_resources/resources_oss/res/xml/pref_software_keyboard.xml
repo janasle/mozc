@@ -37,7 +37,7 @@
          the keyboard layout to portrait or landscape appropriately.
     -->
     <org.mozc.android.inputmethod.japanese.preference.KeyboardLayoutPreference
-        android:defaultValue="TWELVE_KEYS"
+        android:defaultValue="QWERTY"
         android:persistent="false"
         android:key="pref_current_keyboard_layout_key"
         android:layout="@layout/pref_large_widget"

@@ -30,5 +30,5 @@
  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 -->
 <resources>
-    <string name="pref_skin_type_default">MATERIAL_DESIGN_LIGHT</string>
+    <string name="pref_skin_type_default">NEAT_LIGHT</string>
 </resources>

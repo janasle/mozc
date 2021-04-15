@@ -61,14 +61,14 @@ import android.widget.LinearLayout;
  * The view to show candidates.
  *
  */
-public class CandidateView extends InOutAnimatedFrameLayout implements MemoryManageable {
+public class CandidateView extends org.mozc.android.inputmethod.japanese.InOutAnimatedFrameLayout implements org.mozc.android.inputmethod.japanese.MemoryManageable {
 
   /** Adapter for conversion candidate selection. */
   @VisibleForTesting
-  static class ConversionCandidateSelectListener implements CandidateSelectListener {
-    private final ViewEventListener viewEventListener;
+  static class ConversionCandidateSelectListener implements org.mozc.android.inputmethod.japanese.CandidateSelectListener {
+    private final org.mozc.android.inputmethod.japanese.ViewEventListener viewEventListener;
 
-    ConversionCandidateSelectListener(ViewEventListener viewEventListener) {
+    ConversionCandidateSelectListener(org.mozc.android.inputmethod.japanese.ViewEventListener viewEventListener) {
       this.viewEventListener = Preconditions.checkNotNull(viewEventListener);
     }
 
@@ -79,7 +79,7 @@ public class CandidateView extends InOutAnimatedFrameLayout implements MemoryMan
     }
   }
 
-  static class ConversionCandidateWordView extends CandidateWordView {
+  static class ConversionCandidateWordView extends org.mozc.android.inputmethod.japanese.CandidateWordView {
     /** Delimiter to split description text into lines. */
     private static final String DESCRIPTION_DELIMITER = " \t\n\r\f";
 
@@ -88,7 +88,7 @@ public class CandidateView extends InOutAnimatedFrameLayout implements MemoryMan
     @VisibleForTesting int foldButtonBackgroundVisibilityThreshold = 0;
 
     // TODO(hidehiko): Simplify the interface as this is needed just for expandSuggestion.
-    private ViewEventListener viewEventListener;
+    private org.mozc.android.inputmethod.japanese.ViewEventListener viewEventListener;
 
     // If viewEventListener.onExpandSuggestion() has been called and now we shouldn't call
     // this method any more until currentCandidateList is replaced with completely different one,
@@ -101,7 +101,7 @@ public class CandidateView extends InOutAnimatedFrameLayout implements MemoryMan
     }
 
     public ConversionCandidateWordView(Context context, AttributeSet attributeSet) {
-      super(context, attributeSet, CandidateWordView.Orientation.VERTICAL);
+      super(context, attributeSet, org.mozc.android.inputmethod.japanese.CandidateWordView.Orientation.VERTICAL);
       Resources resources = getResources();
       scroller.setDecayRate(
           resources.getInteger(R.integer.candidate_scroller_velocity_decay_rate) / 1000000f);
@@ -165,7 +165,7 @@ public class CandidateView extends InOutAnimatedFrameLayout implements MemoryMan
       return ConversionCandidateLayouter.class.cast(super.getCandidateLayouter());
     }
 
-    void setViewEventListener(ViewEventListener viewEventListener) {
+    void setViewEventListener(org.mozc.android.inputmethod.japanese.ViewEventListener viewEventListener) {
       this.viewEventListener = viewEventListener;
     }
 
@@ -241,6 +241,7 @@ public class CandidateView extends InOutAnimatedFrameLayout implements MemoryMan
     @Override
     public void setSkin(Skin skin) {
       super.setSkin(skin);
+      org.mozc.android.inputmethod.japanese.MozcLog.d("JAK CandidateView setting skin " + skin);
       candidateLayoutRenderer.setSeparatorColor(skin.candidateBackgroundSeparatorColor);
     }
   }
@@ -284,8 +285,8 @@ public class CandidateView extends InOutAnimatedFrameLayout implements MemoryMan
     return ConversionCandidateWordView.class.cast(findViewById(R.id.candidate_word_view));
   }
 
-  private ConversionCandidateWordContainerView getConversionCandidateWordContainerView() {
-    return ConversionCandidateWordContainerView.class.cast(
+  private org.mozc.android.inputmethod.japanese.ConversionCandidateWordContainerView getConversionCandidateWordContainerView() {
+    return org.mozc.android.inputmethod.japanese.ConversionCandidateWordContainerView.class.cast(
         findViewById(R.id.conversion_candidate_word_container_view));
   }
 
@@ -318,7 +319,7 @@ public class CandidateView extends InOutAnimatedFrameLayout implements MemoryMan
    * Register callback object.
    * @param listener
    */
-  void setViewEventListener(ViewEventListener listener) {
+  void setViewEventListener(org.mozc.android.inputmethod.japanese.ViewEventListener listener) {
     Preconditions.checkNotNull(listener);
     ConversionCandidateWordView conversionCandidateWordView = getConversionCandidateWordView();
     conversionCandidateWordView.setViewEventListener(listener);

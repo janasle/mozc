@@ -92,14 +92,14 @@ import javax.annotation.Nullable;
  * Manages Input, Candidate and Extracted views.
  *
  */
-public class ViewManager implements ViewManagerInterface {
+public class ViewManager implements org.mozc.android.inputmethod.japanese.ViewManagerInterface {
 
   /**
    * An small wrapper to inject keyboard view resizing when a user selects a candidate.
    */
-  class ViewManagerEventListener extends ViewEventDelegator {
+  class ViewManagerEventListener extends org.mozc.android.inputmethod.japanese.ViewEventDelegator {
 
-    ViewManagerEventListener(ViewEventListener delegated) {
+    ViewManagerEventListener(org.mozc.android.inputmethod.japanese.ViewEventListener delegated) {
       super(delegated);
     }
 
@@ -299,10 +299,11 @@ public class ViewManager implements ViewManagerInterface {
   }
 
   // Registered by the user (typically MozcService)
-  @VisibleForTesting final ViewEventListener eventListener;
+  @VisibleForTesting final org.mozc.android.inputmethod.japanese.ViewEventListener eventListener;
 
   // The view of the MechaMozc.
-  @VisibleForTesting MozcView mozcView;
+  @VisibleForTesting
+  org.mozc.android.inputmethod.japanese.MozcView mozcView;
 
   // Menu dialog and its listener.
   private final MenuDialogListener menuDialogListener;
@@ -417,9 +418,9 @@ public class ViewManager implements ViewManagerInterface {
   /** Handles software keyboard event and sends it to the service. */
   private final KeyboardActionAdapter keyboardActionListener;
 
-  private final PrimaryKeyCodeConverter primaryKeyCodeConverter;
+  private final org.mozc.android.inputmethod.japanese.PrimaryKeyCodeConverter primaryKeyCodeConverter;
 
-  public ViewManager(Context context, ViewEventListener listener,
+  public ViewManager(Context context, org.mozc.android.inputmethod.japanese.ViewEventListener listener,
                      SymbolHistoryStorage symbolHistoryStorage, ImeSwitcher imeSwitcher,
                      MenuDialogListener menuDialogListener) {
     this(context, listener, symbolHistoryStorage, imeSwitcher, menuDialogListener,
@@ -427,7 +428,7 @@ public class ViewManager implements ViewManagerInterface {
   }
 
   @VisibleForTesting
-  ViewManager(Context context, ViewEventListener listener,
+  ViewManager(Context context, org.mozc.android.inputmethod.japanese.ViewEventListener listener,
               SymbolHistoryStorage symbolHistoryStorage, ImeSwitcher imeSwitcher,
               @Nullable MenuDialogListener menuDialogListener, ProbableKeyEventGuesser guesser,
               HardwareKeyboard hardwareKeyboard) {
@@ -436,7 +437,7 @@ public class ViewManager implements ViewManagerInterface {
     Preconditions.checkNotNull(imeSwitcher);
     Preconditions.checkNotNull(hardwareKeyboard);
 
-    primaryKeyCodeConverter = new PrimaryKeyCodeConverter(context, guesser);
+    primaryKeyCodeConverter = new org.mozc.android.inputmethod.japanese.PrimaryKeyCodeConverter(context, guesser);
 
     symbolNumberSoftwareKeyboardModel.setKeyboardMode(KeyboardMode.SYMBOL_NUMBER);
 
@@ -482,8 +483,8 @@ public class ViewManager implements ViewManagerInterface {
    * @return newly created view.
    */
   @Override
-  public MozcView createMozcView(Context context) {
-    mozcView = MozcView.class.cast(LayoutInflater.from(context).inflate(R.layout.mozc_view, null));
+  public org.mozc.android.inputmethod.japanese.MozcView createMozcView(Context context) {
+    mozcView = org.mozc.android.inputmethod.japanese.MozcView.class.cast(LayoutInflater.from(context).inflate(R.layout.mozc_view, null));
     // Suppress update of View's internal state
     // until all the updates done in this method are finished. Just in case.
     mozcView.setVisibility(View.GONE);
@@ -538,6 +539,7 @@ public class ViewManager implements ViewManagerInterface {
     mozcView.setPopupEnabled(popupEnabled);
     mozcView.setFlickSensitivity(flickSensitivity);
     mozcView.setSkin(skin);
+    org.mozc.android.inputmethod.japanese.MozcLog.d("JAK ViewManager setting skin " + skin);
 
     // Clear the menu dialog.
     menuDialog = null;
@@ -550,14 +552,14 @@ public class ViewManager implements ViewManagerInterface {
 
   private void showMenuDialog() {
     if (mozcView == null) {
-      MozcLog.w("mozcView is not initialized.");
+      org.mozc.android.inputmethod.japanese.MozcLog.w("mozcView is not initialized.");
       return;
     }
 
     menuDialog = new MenuDialog(mozcView.getContext(), Optional.fromNullable(menuDialogListener));
     IBinder windowToken = mozcView.getWindowToken();
     if (windowToken == null) {
-      MozcLog.w("Unknown window token");
+      org.mozc.android.inputmethod.japanese.MozcLog.w("Unknown window token");
     } else {
       menuDialog.setWindowToken(windowToken);
     }
@@ -566,11 +568,11 @@ public class ViewManager implements ViewManagerInterface {
 
   private void showImePickerDialog() {
     if (mozcView == null) {
-      MozcLog.w("mozcView is not initialized.");
+      org.mozc.android.inputmethod.japanese.MozcLog.w("mozcView is not initialized.");
       return;
     }
-    if (!MozcUtil.requestShowInputMethodPicker(mozcView.getContext())) {
-      MozcLog.e("Failed to send message to launch the input method picker dialog.");
+    if (!org.mozc.android.inputmethod.japanese.MozcUtil.requestShowInputMethodPicker(mozcView.getContext())) {
+      org.mozc.android.inputmethod.japanese.MozcLog.e("Failed to send message to launch the input method picker dialog.");
     }
   }
 
@@ -626,10 +628,10 @@ public class ViewManager implements ViewManagerInterface {
       mozcView.setEmojiEnabled(
           EmojiUtil.isUnicodeEmojiAvailable(Build.VERSION.SDK_INT),
           EmojiUtil.isCarrierEmojiAllowed(attribute));
-      mozcView.setPasswordField(MozcUtil.isPasswordField(attribute.inputType));
+      mozcView.setPasswordField(org.mozc.android.inputmethod.japanese.MozcUtil.isPasswordField(attribute.inputType));
       mozcView.setEditorInfo(attribute);
     }
-    isVoiceInputEligible = MozcUtil.isVoiceInputPreferred(attribute);
+    isVoiceInputEligible = org.mozc.android.inputmethod.japanese.MozcUtil.isVoiceInputPreferred(attribute);
 
     japaneseSoftwareKeyboardModel.setInputType(attribute.inputType);
     // TODO(hsumita): Set input type on Hardware keyboard, too. Otherwise, Hiragana input can be
@@ -1074,7 +1076,7 @@ public class ViewManager implements ViewManagerInterface {
 
   @VisibleForTesting
   @Override
-  public ViewEventListener getEventListener() {
+  public org.mozc.android.inputmethod.japanese.ViewEventListener getEventListener() {
     return eventListener;
   }
 

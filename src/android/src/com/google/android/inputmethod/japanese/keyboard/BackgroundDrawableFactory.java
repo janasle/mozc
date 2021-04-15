@@ -153,6 +153,7 @@ public class BackgroundDrawableFactory {
   }
 
   public void setSkin(Skin skin) {
+    org.mozc.android.inputmethod.japanese.MozcLog.d("JAK BackgroundDrawableFactory setting skin " + skin);
     Preconditions.checkNotNull(skin);
     if (this.skin.equals(skin)) {
       return;

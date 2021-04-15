@@ -83,14 +83,14 @@ public class KeyboardLayoutPreference extends Preference {
   }
 
   class ImageAdapter extends BaseAdapter {
-    private final EnumMap<KeyboardLayout, KeyboardPreviewDrawable> drawableMap =
-        new EnumMap<KeyboardLayout, KeyboardPreviewDrawable>(KeyboardLayout.class);
+    private final EnumMap<KeyboardLayout, org.mozc.android.inputmethod.japanese.preference.KeyboardPreviewDrawable> drawableMap =
+        new EnumMap<KeyboardLayout, org.mozc.android.inputmethod.japanese.preference.KeyboardPreviewDrawable>(KeyboardLayout.class);
 
     ImageAdapter(Resources resources) {
       for (Item item : itemList) {
         drawableMap.put(
             item.keyboardLayout,
-            new KeyboardPreviewDrawable(resources, item.keyboardLayout, item.specification));
+            new org.mozc.android.inputmethod.japanese.preference.KeyboardPreviewDrawable(resources, item.keyboardLayout, item.specification));
       }
     }
 
@@ -141,7 +141,8 @@ public class KeyboardLayoutPreference extends Preference {
 
     void setSkin(Skin skin) {
       Preconditions.checkNotNull(skin);
-      for (KeyboardPreviewDrawable drawable : drawableMap.values()) {
+      org.mozc.android.inputmethod.japanese.MozcLog.d("JAK KeyboardlayoutPreference setting skin " + skin);
+      for (org.mozc.android.inputmethod.japanese.preference.KeyboardPreviewDrawable drawable : drawableMap.values()) {
         drawable.setSkin(skin);
       }
     }
@@ -329,10 +330,15 @@ public class KeyboardLayoutPreference extends Preference {
 
   void updateSkin() {
     Resources resources = getContext().getResources();
-    SkinType skinType = PreferenceUtil.getEnum(
+    MozcLog.d("JAK updating skin with prefs = " + getSharedPreferences().getAll());
+    MozcLog.d("JAK looking for " + resources.getString(R.string.pref_skin_type_key));
+    MozcLog.d("JAK while default is " + resources.getString(R.string.pref_skin_type_default));
+    MozcLog.d("JAK SkinType.valueOf(resources.getString(R.string.pref_skin_type_default)) = " + SkinType.valueOf(resources.getString(R.string.pref_skin_type_default)));
+    SkinType skinType = org.mozc.android.inputmethod.japanese.preference.PreferenceUtil.getEnum(
         getSharedPreferences(),
         resources.getString(R.string.pref_skin_type_key),
         SkinType.class, SkinType.valueOf(resources.getString(R.string.pref_skin_type_default)));
+    MozcLog.d("JAK updating skin to " + skinType);
     imageAdapter.setSkin(skinType.getSkin(resources));
   }
 }

@@ -47,29 +47,31 @@ public enum SkinType {
   BLUE_DARKGRAY(R.xml.skin_blue_darkgray),
   MATERIAL_DESIGN_LIGHT(R.xml.skin_material_design_light),
   MATERIAL_DESIGN_DARK(R.xml.skin_material_design_dark),
+  NEAT_LIGHT(R.xml.skin_neat_light),
   // This is an instance for testing of skin support in some classes.
   // TODO(matsuzakit): No more required. Remove.
   TEST(R.xml.skin_orange_lightgray)
   ;
 
-  private Optional<Skin> skin = Optional.absent();
+  private Optional<org.mozc.android.inputmethod.japanese.view.Skin> skin = Optional.absent();
   private final int resourceId;
 
   private SkinType(int resourceId) {
     this.resourceId = resourceId;
   }
 
-  public Skin getSkin(Resources resources) {
+  public org.mozc.android.inputmethod.japanese.view.Skin getSkin(Resources resources) {
     Preconditions.checkNotNull(resources);
     if (skin.isPresent()) {
       return skin.get();
     }
-    SkinParser parser = new SkinParser(resources, resources.getXml(resourceId));
+    org.mozc.android.inputmethod.japanese.view.SkinParser parser = new org.mozc.android.inputmethod.japanese.view.SkinParser(resources, resources.getXml(resourceId));
     try {
       skin = Optional.of(parser.parseSkin());
+      MozcLog.d("JAK getSkin. " + skin + "resourceId: " + resourceId + " - " + resources.getXml(resourceId));
     } catch (SkinParserException e) {
       MozcLog.e(e.getLocalizedMessage());
-      skin = Optional.of(new Skin());  // Fall-back skin.
+      skin = Optional.of(new org.mozc.android.inputmethod.japanese.view.Skin());  // Fall-back skin.
     }
     return skin.get();
   }

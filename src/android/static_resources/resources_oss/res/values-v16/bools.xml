@@ -32,5 +32,6 @@
 <resources>
 
     <bool name="enable_user_dictionary_export">true</bool>
+    <string name="pref_skin_type_default">NEAT_LIGHT</string>
 
 </resources>

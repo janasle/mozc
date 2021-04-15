@@ -31,7 +31,7 @@
 -->
 <resources>
     <!-- Default skin for pre-L -->
-    <string name="pref_skin_type_default" translatable="false">BLUE_DARKGRAY</string>
+    <string name="pref_skin_type_default" translatable="false">NEAT_LIGHT</string>
 
     <!-- Preference url -->
     <string name="pref_oss_credits_url" translatable="false">file:///android_asset/credits_en.html</string>

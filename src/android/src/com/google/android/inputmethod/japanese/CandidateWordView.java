@@ -67,7 +67,7 @@ import javax.annotation.Nullable;
  *
  */
 // TODO(matsuzakit): Optional is introduced partially. Complete introduction.
-abstract class CandidateWordView extends View implements MemoryManageable {
+abstract class CandidateWordView extends View implements org.mozc.android.inputmethod.japanese.MemoryManageable {
 
   /**
    * Handles gestures to scroll candidate list and choose a candidate.
@@ -355,7 +355,7 @@ abstract class CandidateWordView extends View implements MemoryManageable {
     };
   }
 
-  private CandidateSelectListener candidateSelectListener;
+  private org.mozc.android.inputmethod.japanese.CandidateSelectListener candidateSelectListener;
 
   // Finally, we only need vertical scrolling.
   // TODO(hidehiko): Remove horizontal scrolling related codes.
@@ -425,7 +425,7 @@ abstract class CandidateWordView extends View implements MemoryManageable {
     candidateWordGestureDetector.reset();
   }
 
-  void setCandidateSelectListener(CandidateSelectListener candidateSelectListener) {
+  void setCandidateSelectListener(org.mozc.android.inputmethod.japanese.CandidateSelectListener candidateSelectListener) {
     this.candidateSelectListener = candidateSelectListener;
   }
 
@@ -698,6 +698,7 @@ abstract class CandidateWordView extends View implements MemoryManageable {
 
   @SuppressWarnings("deprecation")
   void setSkin(Skin skin) {
+    org.mozc.android.inputmethod.japanese.MozcLog.d("JAK CandidateWordView setting skin " + skin);
     backgroundDrawableFactory.setSkin(Preconditions.checkNotNull(skin));
     resetSpanBackground();
     candidateLayoutRenderer.setSkin(skin);

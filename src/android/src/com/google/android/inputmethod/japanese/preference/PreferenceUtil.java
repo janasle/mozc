@@ -233,15 +233,15 @@ public class PreferenceUtil {
   }
 
   private static void initializeCurrentKeyboardLayoutPreference(Preference preference) {
-    if (!(preference instanceof KeyboardLayoutPreference)) {
+    if (!(preference instanceof org.mozc.android.inputmethod.japanese.preference.KeyboardLayoutPreference)) {
       return;
     }
-
     // Initialize the value based on the current orientation.
     SharedPreferences sharedPreferences = preference.getSharedPreferences();
+    MozcLog.d("JAK initializeCurrentKeyboardLayoutPreference " + preference + ", " + sharedPreferences.getAll());
     boolean isLandscapeKeyboardSettingActive = isLandscapeKeyboardSettingActive(
         sharedPreferences, preference.getContext().getResources().getConfiguration().orientation);
-    KeyboardLayoutPreference.class.cast(preference).setValue(
+    org.mozc.android.inputmethod.japanese.preference.KeyboardLayoutPreference.class.cast(preference).setValue(
         getKeyboardLayout(sharedPreferences,
                           isLandscapeKeyboardSettingActive
                               ? PREF_LANDSCAPE_KEYBOARD_LAYOUT_KEY
@@ -349,17 +349,22 @@ public class PreferenceUtil {
   public static <T extends Enum<T>> T getEnum(
       SharedPreferences sharedPreference, String key, Class<T> type,
       T defaultValue, T conversionRecoveryValue) {
+    MozcLog.d("JAK getEnum pref = " + sharedPreference + ", key = " + key + ", defaultValue = " + defaultValue + ", recoveryValue = " + conversionRecoveryValue);
     if (sharedPreference == null) {
       return defaultValue;
     }
+    MozcLog.d("JAK getEnum all prefs = " + sharedPreference.getAll());
     String name = sharedPreference.getString(key, null);
     if (name != null) {
       try {
+        MozcLog.d("JAK getEnum of type " + type + " and name = " + name + ", result = " + Enum.valueOf(type, name));
         return Enum.valueOf(type, name);
       } catch (IllegalArgumentException e) {
+        MozcLog.d("JAK returning recovery");
         return conversionRecoveryValue;
       }
     }
+    MozcLog.d("JAK returning default");
     return defaultValue;
   }
 
@@ -381,11 +386,12 @@ public class PreferenceUtil {
     Set<Integer> preferenceResources = new HashSet<Integer>();
     // Collect all the preferences resource ids from possible preference pages,
     // removing duplication.
-    for (PreferencePage page : PreferencePage.values()) {
-      for (int id : PreferencePage.getResourceIdList(page, isDebug, useUsageStats)) {
+    for (org.mozc.android.inputmethod.japanese.preference.PreferencePage page : org.mozc.android.inputmethod.japanese.preference.PreferencePage.values()) {
+      for (int id : org.mozc.android.inputmethod.japanese.preference.PreferencePage.getResourceIdList(page, isDebug, useUsageStats)) {
         preferenceResources.add(id);
       }
     }
+    MozcLog.d("JAK initializeCurrentKeyboardLayoutPreference " + preferenceManager + ", " + preferenceResources);
     for (int id : preferenceResources) {
       // 'true' here means the preferences which have not set yet are *always* set here.
       // This doesn't mean *Reset all the preferences*.

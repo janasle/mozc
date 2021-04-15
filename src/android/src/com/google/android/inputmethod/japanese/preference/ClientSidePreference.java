@@ -40,6 +40,8 @@ import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.content.res.Resources;
 
+import java.util.Arrays;
+
 /**
  * This class expresses the client-side preferences which corresponds to current
  * device configuration.
@@ -121,6 +123,7 @@ public class ClientSidePreference {
       int flickSensitivity, EmojiProviderType emojiProviderType, HardwareKeyMap hardwareKeyMap,
       SkinType skinType, boolean isMicrophoneButtonEnabled, LayoutAdjustment layoutAdjustment,
       int keyboardHeightRatio) {
+    org.mozc.android.inputmethod.japanese.MozcLog.d("JAK ClientSidePreferences init with specific values" + Arrays.asList(Thread.currentThread().getStackTrace()));
     this.isHapticFeedbackEnabled = isHapticFeedbackEnabled;
     this.hapticFeedbackDuration = hapticFeedbackDuration;
     this.isSoundFeedbackEnabled = isSoundFeedbackEnabled;
@@ -143,6 +146,7 @@ public class ClientSidePreference {
       SharedPreferences sharedPreferences, Resources resources, int deviceOrientation) {
     Preconditions.checkNotNull(sharedPreferences);
 
+    org.mozc.android.inputmethod.japanese.MozcLog.d("JAK ClientSidePreferences init with prefs "+ sharedPreferences.getAll() + ", " + Arrays.asList(Thread.currentThread().getStackTrace()));
     isHapticFeedbackEnabled =
         sharedPreferences.getBoolean(org.mozc.android.inputmethod.japanese.preference.PreferenceUtil.PREF_HAPTIC_FEEDBACK_KEY, false);
     hapticFeedbackDuration =
@@ -212,6 +216,10 @@ public class ClientSidePreference {
     layoutAdjustment = org.mozc.android.inputmethod.japanese.preference.PreferenceUtil.getEnum(
         sharedPreferences, layoutAdjustmentKey, LayoutAdjustment.class, LayoutAdjustment.FILL);
     keyboardHeightRatio = sharedPreferences.getInt(keyboardHeightRatioKey, 100);
+
+    org.mozc.android.inputmethod.japanese.MozcLog.d("JAK prefs = " + this);
+    org.mozc.android.inputmethod.japanese.MozcLog.d("JAK prefs skin requested = " + resources.getString(R.string.pref_skin_type_key));
+    org.mozc.android.inputmethod.japanese.MozcLog.d("JAK prefs skin default = " + resources.getString(R.string.pref_skin_type_default));
   }
 
   public boolean isHapticFeedbackEnabled() {
@@ -276,5 +284,27 @@ public class ClientSidePreference {
 
   public int getKeyboardHeightRatio() {
     return keyboardHeightRatio;
+  }
+
+  @Override
+  public String toString() {
+    return "ClientSidePreference{" +
+            "isHapticFeedbackEnabled=" + isHapticFeedbackEnabled +
+            ", hapticFeedbackDuration=" + hapticFeedbackDuration +
+            ", isSoundFeedbackEnabled=" + isSoundFeedbackEnabled +
+            ", soundFeedbackVolume=" + soundFeedbackVolume +
+            ", isPopupFeedbackEnabled=" + isPopupFeedbackEnabled +
+            ", keyboardLayout=" + keyboardLayout +
+            ", inputStyle=" + inputStyle +
+            ", qwertyLayoutForAlphabet=" + qwertyLayoutForAlphabet +
+            ", fullscreenMode=" + fullscreenMode +
+            ", flickSensitivity=" + flickSensitivity +
+            ", emojiProviderType=" + emojiProviderType +
+            ", hardwareKeyMap=" + hardwareKeyMap +
+            ", skinType=" + skinType +
+            ", isMicrophoneButtonEnabled=" + isMicrophoneButtonEnabled +
+            ", layoutAdjustment=" + layoutAdjustment +
+            ", keyboardHeightRatio=" + keyboardHeightRatio +
+            '}';
   }
 }

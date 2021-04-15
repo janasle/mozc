@@ -46,6 +46,9 @@ import android.util.AttributeSet;
 import android.view.View;
 import android.widget.LinearLayout;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+
 /**
  * Narrow frame view.
  */
@@ -121,6 +124,7 @@ public class NarrowFrameView extends LinearLayout {
 
   @SuppressWarnings("deprecation")
   public void setSkin(Skin skin) {
+    org.mozc.android.inputmethod.japanese.MozcLog.d("JAK NarrowFrameView setting skin " + skin + "\n"+Arrays.asList(Thread.currentThread().getStackTrace()));
     this.skin = Preconditions.checkNotNull(skin);
     setBackgroundDrawable(skin.narrowFrameBackgroundDrawable);
     getNarrowFrameSeparator().setBackgroundDrawable(
@@ -129,7 +133,7 @@ public class NarrowFrameView extends LinearLayout {
   }
 
   public void setEventListener(
-      final ViewEventListener viewEventListener, OnClickListener widenButtonClickListener) {
+          final org.mozc.android.inputmethod.japanese.ViewEventListener viewEventListener, OnClickListener widenButtonClickListener) {
     Preconditions.checkNotNull(viewEventListener);
     Preconditions.checkNotNull(widenButtonClickListener);
 

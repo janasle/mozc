@@ -73,19 +73,19 @@ import java.util.Set;
  */
 public class KeyboardView extends View implements MemoryManageable {
 
-  private final BackgroundDrawableFactory backgroundDrawableFactory =
-      new BackgroundDrawableFactory(getResources());
+  private final org.mozc.android.inputmethod.japanese.keyboard.BackgroundDrawableFactory backgroundDrawableFactory =
+      new org.mozc.android.inputmethod.japanese.keyboard.BackgroundDrawableFactory(getResources());
   private final DrawableCache drawableCache = new DrawableCache(getResources());
-  private final PopUpPreview.Pool popupPreviewPool =
-      new PopUpPreview.Pool(
+  private final org.mozc.android.inputmethod.japanese.keyboard.PopUpPreview.Pool popupPreviewPool =
+      new org.mozc.android.inputmethod.japanese.keyboard.PopUpPreview.Pool(
           this, Looper.getMainLooper(), backgroundDrawableFactory, getResources());
   private final long popupDismissDelay;
 
-  private Optional<Keyboard> keyboard = Optional.absent();
+  private Optional<org.mozc.android.inputmethod.japanese.keyboard.Keyboard> keyboard = Optional.absent();
   // Do not update directly. Use setMetaState instead.
   @VisibleForTesting Set<MetaState> metaState;
-  @VisibleForTesting final KeyboardViewBackgroundSurface backgroundSurface =
-      new KeyboardViewBackgroundSurface(backgroundDrawableFactory, drawableCache);
+  @VisibleForTesting final org.mozc.android.inputmethod.japanese.keyboard.KeyboardViewBackgroundSurface backgroundSurface =
+      new org.mozc.android.inputmethod.japanese.keyboard.KeyboardViewBackgroundSurface(backgroundDrawableFactory, drawableCache);
   @VisibleForTesting boolean isKeyPressed;
 
   private final float scaledDensity;
@@ -104,7 +104,7 @@ public class KeyboardView extends View implements MemoryManageable {
    * When the number of the content is changed, meta state "HANDLING_TOUCH_EVENT"
    * is updated.
    */
-  private final class KeyEventContextMap extends ForwardingMap<Integer, KeyEventContext>{
+  private final class KeyEventContextMap extends ForwardingMap<Integer, org.mozc.android.inputmethod.japanese.keyboard.KeyEventContext>{
 
     // HANDLING_TOUCH_EVENT metastate must be kept turned on for DELAY millisecond
     // after registered KeyEventContext becomes empty.
@@ -123,14 +123,14 @@ public class KeyboardView extends View implements MemoryManageable {
       }
     };
 
-    private final Map<Integer, KeyEventContext> delegate;
+    private final Map<Integer, org.mozc.android.inputmethod.japanese.keyboard.KeyEventContext> delegate;
 
-    private KeyEventContextMap(Map<Integer, KeyEventContext> delegate) {
+    private KeyEventContextMap(Map<Integer, org.mozc.android.inputmethod.japanese.keyboard.KeyEventContext> delegate) {
       this.delegate = delegate;
     }
 
     @Override
-    protected Map<Integer, KeyEventContext> delegate() {
+    protected Map<Integer, org.mozc.android.inputmethod.japanese.keyboard.KeyEventContext> delegate() {
       return delegate;
     }
 
@@ -143,21 +143,21 @@ public class KeyboardView extends View implements MemoryManageable {
     }
 
     @Override
-    public KeyEventContext put(Integer key, KeyEventContext value) {
-      KeyEventContext result = super.put(key, value);
+    public org.mozc.android.inputmethod.japanese.keyboard.KeyEventContext put(Integer key, org.mozc.android.inputmethod.japanese.keyboard.KeyEventContext value) {
+      org.mozc.android.inputmethod.japanese.keyboard.KeyEventContext result = super.put(key, value);
       updateHandlingTouchEventMetaState(true);
       return result;
     }
 
     @Override
-    public void putAll(Map<? extends Integer, ? extends KeyEventContext> map) {
+    public void putAll(Map<? extends Integer, ? extends org.mozc.android.inputmethod.japanese.keyboard.KeyEventContext> map) {
       super.putAll(map);
       updateHandlingTouchEventMetaState(true);
     }
 
     @Override
-    public KeyEventContext remove(Object object) {
-      KeyEventContext result = super.remove(object);
+    public org.mozc.android.inputmethod.japanese.keyboard.KeyEventContext remove(Object object) {
+      org.mozc.android.inputmethod.japanese.keyboard.KeyEventContext result = super.remove(object);
       updateHandlingTouchEventMetaState(true);
       return result;
     }
@@ -192,10 +192,10 @@ public class KeyboardView extends View implements MemoryManageable {
   // We use LinkedHashMap with accessOrder=false here, in order to ensure sending key events
   // in the pressing order in flushPendingKeyEvent.
   // Its initial capacity (16) and load factor (0.75) are just heuristics.
-  @VisibleForTesting public final Map<Integer, KeyEventContext> keyEventContextMap =
-      new KeyEventContextMap(new LinkedHashMap<Integer, KeyEventContext>(16, 0.75f, false));
+  @VisibleForTesting public final Map<Integer, org.mozc.android.inputmethod.japanese.keyboard.KeyEventContext> keyEventContextMap =
+      new KeyEventContextMap(new LinkedHashMap<Integer, org.mozc.android.inputmethod.japanese.keyboard.KeyEventContext>(16, 0.75f, false));
 
-  private Optional<KeyEventHandler> keyEventHandler = Optional.absent();
+  private Optional<org.mozc.android.inputmethod.japanese.keyboard.KeyEventHandler> keyEventHandler = Optional.absent();
 
   // This constructor is package private for this unit test.
   public KeyboardView(Context context) {
@@ -219,19 +219,19 @@ public class KeyboardView extends View implements MemoryManageable {
     accessibilityDelegate = new KeyboardAccessibilityDelegate(
         this, new KeyboardAccessibilityDelegate.TouchEventEmulator() {
           @Override
-          public void emulateLongPress(Key key) {
+          public void emulateLongPress(org.mozc.android.inputmethod.japanese.keyboard.Key key) {
             Preconditions.checkNotNull(key);
             emulateImpl(key, true);
           }
 
           @Override
-          public void emulateKeyInput(Key key) {
+          public void emulateKeyInput(org.mozc.android.inputmethod.japanese.keyboard.Key key) {
             Preconditions.checkNotNull(key);
             emulateImpl(key, false);
           }
 
           private void emulateImpl(Key key, boolean isLongPress) {
-            KeyEventContext keyEventContext = new KeyEventContext(key, 0, 0, 0, 0, 0, 0, metaState);
+            org.mozc.android.inputmethod.japanese.keyboard.KeyEventContext keyEventContext = new org.mozc.android.inputmethod.japanese.keyboard.KeyEventContext(key, 0, 0, 0, 0, 0, 0, metaState);
             processKeyEventContextForOnDownEvent(keyEventContext);
             if (isLongPress && keyEventHandler.isPresent()) {
               keyEventHandler.get().handleMessageLongPress(keyEventContext);
@@ -265,9 +265,9 @@ public class KeyboardView extends View implements MemoryManageable {
     return -flickSensitivity * 1.5f * scaledDensity;
   }
 
-  private Optional<KeyEventContext> getKeyEventContextByKey(Key key) {
+  private Optional<org.mozc.android.inputmethod.japanese.keyboard.KeyEventContext> getKeyEventContextByKey(Key key) {
     Preconditions.checkNotNull(key);
-    for (KeyEventContext keyEventContext : keyEventContextMap.values()) {
+    for (org.mozc.android.inputmethod.japanese.keyboard.KeyEventContext keyEventContext : keyEventContextMap.values()) {
       if (key == keyEventContext.key) {
         return Optional.of(keyEventContext);
       }
@@ -275,7 +275,7 @@ public class KeyboardView extends View implements MemoryManageable {
     return Optional.absent();
   }
 
-  private void disposeKeyEventContext(KeyEventContext keyEventContext) {
+  private void disposeKeyEventContext(org.mozc.android.inputmethod.japanese.keyboard.KeyEventContext keyEventContext) {
     Preconditions.checkNotNull(keyEventContext);
     if (keyEventHandler.isPresent()) {
       keyEventHandler.get().cancelDelayedKeyEvent(keyEventContext);
@@ -291,7 +291,7 @@ public class KeyboardView extends View implements MemoryManageable {
    */
   public void resetState() {
     // To re-render the key in the normal state, notify the background surface about it.
-    for (KeyEventContext keyEventContext : keyEventContextMap.values()) {
+    for (org.mozc.android.inputmethod.japanese.keyboard.KeyEventContext keyEventContext : keyEventContextMap.values()) {
       disposeKeyEventContext(keyEventContext);
     }
     keyEventContextMap.clear();
@@ -304,11 +304,11 @@ public class KeyboardView extends View implements MemoryManageable {
     // in case this method is invoked recursively from the callback.
     // TODO(hidehiko): Refactor around keyEventHandler and keyEventContext. Also we should be
     //   able to refactor this method with resetState.
-    KeyEventContext[] keyEventContextArray =
-        keyEventContextMap.values().toArray(new KeyEventContext[keyEventContextMap.size()]);
+    org.mozc.android.inputmethod.japanese.keyboard.KeyEventContext[] keyEventContextArray =
+        keyEventContextMap.values().toArray(new org.mozc.android.inputmethod.japanese.keyboard.KeyEventContext[keyEventContextMap.size()]);
     keyEventContextMap.clear();
 
-    for (KeyEventContext keyEventContext : keyEventContextArray) {
+    for (org.mozc.android.inputmethod.japanese.keyboard.KeyEventContext keyEventContext : keyEventContextArray) {
       int keyCode = keyEventContext.getKeyCode();
       int pressedKeyCode = keyEventContext.getPressedKeyCode();
       disposeKeyEventContext(keyEventContext);
@@ -325,7 +325,7 @@ public class KeyboardView extends View implements MemoryManageable {
   }
 
   /** Set a given keyboard to this view, and send a request to update. */
-  public void setKeyboard(Keyboard keyboard) {
+  public void setKeyboard(org.mozc.android.inputmethod.japanese.keyboard.Keyboard keyboard) {
     flushPendingKeyEvent(Optional.<TouchEvent>absent());
 
     this.keyboard = Optional.of(keyboard);
@@ -349,12 +349,13 @@ public class KeyboardView extends View implements MemoryManageable {
   }
 
   /** @return the current keyboard instance */
-  public Optional<Keyboard> getKeyboard() {
+  public Optional<org.mozc.android.inputmethod.japanese.keyboard.Keyboard> getKeyboard() {
     return keyboard;
   }
 
   @SuppressWarnings("deprecation")
   public void setSkin(Skin skin) {
+    org.mozc.android.inputmethod.japanese.MozcLog.d("JAK KeyboardView setting skin " + skin);
     Preconditions.checkNotNull(skin);
     drawableCache.setSkin(skin);
     popupPreviewPool.setSkin(skin);
@@ -365,13 +366,13 @@ public class KeyboardView extends View implements MemoryManageable {
     setBackgroundDrawable(skin.windowBackgroundDrawable.getConstantState().newDrawable());
   }
 
-  public void setKeyEventHandler(KeyEventHandler keyEventHandler) {
+  public void setKeyEventHandler(org.mozc.android.inputmethod.japanese.keyboard.KeyEventHandler keyEventHandler) {
     // This method needs to be invoked from a thread which the looper held by older keyEventHandler
     // points. Otherwise, there can be inconsistent state.
-    Optional<KeyEventHandler> oldKeyEventHandler = this.keyEventHandler;
+    Optional<org.mozc.android.inputmethod.japanese.keyboard.KeyEventHandler> oldKeyEventHandler = this.keyEventHandler;
     if (oldKeyEventHandler.isPresent()) {
       // Cancel pending key event messages sent by this view.
-      for (KeyEventContext keyEventContext : keyEventContextMap.values()) {
+      for (org.mozc.android.inputmethod.japanese.keyboard.KeyEventContext keyEventContext : keyEventContextMap.values()) {
         oldKeyEventHandler.get().cancelDelayedKeyEvent(keyEventContext);
       }
     }
@@ -418,15 +419,15 @@ public class KeyboardView extends View implements MemoryManageable {
     int pointerId = event.getPointerId(pointerIndex);
     float flickThreshold =
         Math.max(keyboard.get().getFlickThreshold() + getFlickSensitivityInDip(), 1);
-    final KeyEventContext keyEventContext = new KeyEventContext(
+    final org.mozc.android.inputmethod.japanese.keyboard.KeyEventContext keyEventContext = new org.mozc.android.inputmethod.japanese.keyboard.KeyEventContext(
         optionalKey.get(), pointerId, x, y, getWidth(), getHeight(),
         flickThreshold * flickThreshold, metaState);
 
     // Show popup.
     updatePopUp(keyEventContext, false);
-    Optional<KeyEntity> keyEntity =
-        KeyEventContext.getKeyEntity(keyEventContext.key, metaState,
-                                     Optional.of(Flick.Direction.CENTER));
+    Optional<org.mozc.android.inputmethod.japanese.keyboard.KeyEntity> keyEntity =
+        org.mozc.android.inputmethod.japanese.keyboard.KeyEventContext.getKeyEntity(keyEventContext.key, metaState,
+                                     Optional.of(org.mozc.android.inputmethod.japanese.keyboard.Flick.Direction.CENTER));
     if (keyEntity.isPresent() && keyEntity.get().getPopUp().isPresent()
         && !keyEntity.get().isLongPressTimeoutTrigger()) {
       keyEventContext.setLongPressCallback(new Runnable() {
@@ -449,7 +450,7 @@ public class KeyboardView extends View implements MemoryManageable {
   }
 
   private void processKeyEventContextForOnDownEvent(
-      final KeyEventContext keyEventContext) {
+      final org.mozc.android.inputmethod.japanese.keyboard.KeyEventContext keyEventContext) {
     Set<MetaState> nextMetaStates = keyEventContext.getNextMetaStates(metaState);
 
     if (!nextMetaStates.equals(metaState)) {
@@ -479,7 +480,7 @@ public class KeyboardView extends View implements MemoryManageable {
     }
     if (keyEventHandler.isPresent()) {
       // Clear pending key events and overwrite by this press key's one.
-      for (KeyEventContext context : keyEventContextMap.values()) {
+      for (org.mozc.android.inputmethod.japanese.keyboard.KeyEventContext context : keyEventContextMap.values()) {
         keyEventHandler.get().cancelDelayedKeyEvent(context);
       }
       keyEventHandler.get().maybeStartDelayedKeyEvent(keyEventContext);
@@ -492,7 +493,7 @@ public class KeyboardView extends View implements MemoryManageable {
     Preconditions.checkState(keyboard.isPresent());
 
     int pointerIndex = getPointerIndex(event.getAction());
-    KeyEventContext keyEventContext = keyEventContextMap.remove(event.getPointerId(pointerIndex));
+    org.mozc.android.inputmethod.japanese.keyboard.KeyEventContext keyEventContext = keyEventContextMap.remove(event.getPointerId(pointerIndex));
     if (keyEventContext == null) {
       // No corresponding event is found, so we have nothing to do.
       return;
@@ -505,14 +506,14 @@ public class KeyboardView extends View implements MemoryManageable {
     processKeyEventContextForOnUpEvent(keyEventContext);
   }
 
-  private void processKeyEventContextForOnUpEvent(KeyEventContext keyEventContext) {
+  private void processKeyEventContextForOnUpEvent(org.mozc.android.inputmethod.japanese.keyboard.KeyEventContext keyEventContext) {
     disposeKeyEventContext(keyEventContext);
 
     int keyCode = keyEventContext.getKeyCode();
     int pressedKeyCode = keyEventContext.getPressedKeyCode();
 
     if (keyEventHandler.isPresent()) {
-      if (keyCode != KeyEntity.INVALID_KEY_CODE) {
+      if (keyCode != org.mozc.android.inputmethod.japanese.keyboard.KeyEntity.INVALID_KEY_CODE) {
         // TODO(hsumita): Confirm that we can put null as a touch event or not.
         keyEventHandler.get().sendKey(keyCode,
             Collections.singletonList(keyEventContext.getTouchEvent().orNull()));
@@ -551,7 +552,7 @@ public class KeyboardView extends View implements MemoryManageable {
   private void onMove(MotionEvent event) {
     int pointerCount = event.getPointerCount();
     for (int i = 0; i < pointerCount; ++i) {
-      KeyEventContext keyEventContext = keyEventContextMap.get(event.getPointerId(i));
+      org.mozc.android.inputmethod.japanese.keyboard.KeyEventContext keyEventContext = keyEventContextMap.get(event.getPointerId(i));
       if (keyEventContext == null) {
         continue;
       }
@@ -563,7 +564,7 @@ public class KeyboardView extends View implements MemoryManageable {
           // The key's state is updated from, at least, initial state, so we'll cancel the
           // pending key events, and invoke new pending key events if necessary.
           keyEventHandler.get().cancelDelayedKeyEvent(keyEventContext);
-          if (keyEventContext.flickDirection == Flick.Direction.CENTER) {
+          if (keyEventContext.flickDirection == org.mozc.android.inputmethod.japanese.keyboard.Flick.Direction.CENTER) {
             keyEventHandler.get().maybeStartDelayedKeyEvent(keyEventContext);
           }
         }
@@ -799,8 +800,8 @@ public class KeyboardView extends View implements MemoryManageable {
     }
   }
 
-  private void updatePopUp(KeyEventContext keyEventContext, boolean isDelayedPopUp) {
-    PopUpPreview popUpPreview = popupPreviewPool.getInstance(keyEventContext.pointerId);
+  private void updatePopUp(org.mozc.android.inputmethod.japanese.keyboard.KeyEventContext keyEventContext, boolean isDelayedPopUp) {
+    org.mozc.android.inputmethod.japanese.keyboard.PopUpPreview popUpPreview = popupPreviewPool.getInstance(keyEventContext.pointerId);
     // Even if popup is disabled by preference, delayed popup (== popup for long-press)
     // is shown otherwise a user cannot know how long (s)he has to press the key
     // to get a character corresponding to long-press.

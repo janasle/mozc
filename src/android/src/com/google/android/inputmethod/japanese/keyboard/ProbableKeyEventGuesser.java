@@ -87,7 +87,7 @@ public class ProbableKeyEventGuesser {
    */
   @VisibleForTesting
   interface StatsFileAccessor {
-    InputStream openStream(Keyboard keyboard, Configuration configuration)
+    InputStream openStream(org.mozc.android.inputmethod.japanese.keyboard.Keyboard keyboard, Configuration configuration)
         throws IOException;
   }
 
@@ -115,7 +115,7 @@ public class ProbableKeyEventGuesser {
     }
 
     @Override
-    public InputStream openStream(Keyboard keyboard, Configuration configuration)
+    public InputStream openStream(org.mozc.android.inputmethod.japanese.keyboard.Keyboard keyboard, Configuration configuration)
         throws IOException {
       Preconditions.checkNotNull(keyboard);
       Preconditions.checkNotNull(configuration);
@@ -127,6 +127,7 @@ public class ProbableKeyEventGuesser {
       Preconditions.checkArgument(
           fileName.indexOf(File.separator) == -1, "fileName shouldn't include separator.");
       for (String file : assetFileNames) {
+        MozcLog.d("JAK assert file: " + file);
         if (file.equals(fileName)) {
           return assetManager.open(fileName);
         }
@@ -199,7 +200,7 @@ public class ProbableKeyEventGuesser {
       void updateStats(String formattedKeyboardName, SparseArray<float[]> stats);
     }
 
-    private final Keyboard keyboard;
+    private final org.mozc.android.inputmethod.japanese.keyboard.Keyboard keyboard;
     private final Configuration configuration;
     private final StatsFileAccessor statsFileAccessor;
     private final UpdateStatsListener updateStatsListener;
@@ -213,7 +214,7 @@ public class ProbableKeyEventGuesser {
      */
     private StatisticsLoader(
         StatsFileAccessor statsFileAccessor,
-        Keyboard keyboard,
+        org.mozc.android.inputmethod.japanese.keyboard.Keyboard keyboard,
         Configuration configuration,
         final Map<String, SparseArray<float[]>> formattedKeyboardNameToStats,
         final Executor updateStatsExecutor) {
@@ -239,7 +240,7 @@ public class ProbableKeyEventGuesser {
 
     @VisibleForTesting
     StatisticsLoader(StatsFileAccessor statsFileAccessor,
-        Keyboard keyboard,
+        org.mozc.android.inputmethod.japanese.keyboard.Keyboard keyboard,
         Configuration configuration,
         UpdateStatsListener updateStatsListener) {
       this.statsFileAccessor = Preconditions.checkNotNull(statsFileAccessor);
@@ -354,7 +355,7 @@ public class ProbableKeyEventGuesser {
   private final Executor dataPropagationExecutor;
 
   // Current Keyboard.
-  private Optional<Keyboard> keyboard = Optional.absent();
+  private Optional<org.mozc.android.inputmethod.japanese.keyboard.Keyboard> keyboard = Optional.absent();
 
   // Current Configuration.
   private Optional<Configuration> configuration = Optional.absent();
@@ -420,7 +421,7 @@ public class ProbableKeyEventGuesser {
    * @see #getProbableKeyEvents(List)
    * @param keyboard a {@link Keyboard} to be set.
    */
-  public void setKeyboard(Keyboard keyboard) {
+  public void setKeyboard(org.mozc.android.inputmethod.japanese.keyboard.Keyboard keyboard) {
     this.keyboard = Optional.of(keyboard);
     updateFormattedKeyboardName();
     maybeUpdateEventStatistics();
@@ -571,7 +572,7 @@ public class ProbableKeyEventGuesser {
     Preconditions.checkState(keyboard.isPresent());
 
     SparseArray<Double> result = new SparseArray<Double>(eventStatistics.size());
-    Keyboard keyboard = this.keyboard.get();
+    org.mozc.android.inputmethod.japanese.keyboard.Keyboard keyboard = this.keyboard.get();
     for (int i = 0; i < eventStatistics.size(); ++i) {
       int sourceId = eventStatistics.keyAt(i);
       int keyCode = keyboard.getKeyCode(sourceId);

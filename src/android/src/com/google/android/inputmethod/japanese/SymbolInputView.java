@@ -110,13 +110,13 @@ import java.util.List;
  * Major-Minor relation is defined by using R.layout.symbol_minor_category_*.
  *
  */
-public class SymbolInputView extends InOutAnimatedFrameLayout implements MemoryManageable {
+public class SymbolInputView extends org.mozc.android.inputmethod.japanese.InOutAnimatedFrameLayout implements org.mozc.android.inputmethod.japanese.MemoryManageable {
 
   /**
    * Adapter for symbol candidate selection.
    */
   // TODO(hidehiko): make this class static.
-  @VisibleForTesting class SymbolCandidateSelectListener implements CandidateSelectListener {
+  @VisibleForTesting class SymbolCandidateSelectListener implements org.mozc.android.inputmethod.japanese.CandidateSelectListener {
     @Override
     public void onCandidateSelected(CandidateWord candidateWord, Optional<Integer> row) {
       Preconditions.checkNotNull(candidateWord);
@@ -157,9 +157,9 @@ public class SymbolInputView extends InOutAnimatedFrameLayout implements MemoryM
         if (emojiProviderDialog.isPresent()) {
           IBinder token = getWindowToken();
           if (token != null) {
-            MozcUtil.setWindowToken(token, emojiProviderDialog.get());
+            org.mozc.android.inputmethod.japanese.MozcUtil.setWindowToken(token, emojiProviderDialog.get());
           } else {
-            MozcLog.w("Unknown window token.");
+            org.mozc.android.inputmethod.japanese.MozcLog.w("Unknown window token.");
           }
 
           // If a user selects a provider, the dialog handler will set major category
@@ -180,8 +180,8 @@ public class SymbolInputView extends InOutAnimatedFrameLayout implements MemoryM
 
     private final Context context;
     private final SymbolCandidateStorage symbolCandidateStorage;
-    private final Optional<ViewEventListener> viewEventListener;
-    private final CandidateSelectListener candidateSelectListener;
+    private final Optional<org.mozc.android.inputmethod.japanese.ViewEventListener> viewEventListener;
+    private final org.mozc.android.inputmethod.japanese.CandidateSelectListener candidateSelectListener;
     private final SymbolMajorCategory majorCategory;
     private Skin skin;
     private final EmojiProviderType emojiProviderType;
@@ -195,11 +195,11 @@ public class SymbolInputView extends InOutAnimatedFrameLayout implements MemoryM
     private boolean feedbackEnabled = true;
 
     SymbolTabWidgetViewPagerAdapter(
-        Context context, SymbolCandidateStorage symbolCandidateStorage,
-        Optional<ViewEventListener> viewEventListener,
-        CandidateSelectListener candidateSelectListener, SymbolMajorCategory majorCategory,
-        Skin skin, EmojiProviderType emojiProviderType, TabHost tabHost, ViewPager viewPager,
-        float candidateTextSize, float descriptionTextSize) {
+            Context context, SymbolCandidateStorage symbolCandidateStorage,
+            Optional<org.mozc.android.inputmethod.japanese.ViewEventListener> viewEventListener,
+            org.mozc.android.inputmethod.japanese.CandidateSelectListener candidateSelectListener, SymbolMajorCategory majorCategory,
+            Skin skin, EmojiProviderType emojiProviderType, TabHost tabHost, ViewPager viewPager,
+            float candidateTextSize, float descriptionTextSize) {
       this.context = Preconditions.checkNotNull(context);
       this.symbolCandidateStorage = Preconditions.checkNotNull(symbolCandidateStorage);
       this.viewEventListener = Preconditions.checkNotNull(viewEventListener);
@@ -214,6 +214,7 @@ public class SymbolInputView extends InOutAnimatedFrameLayout implements MemoryM
     }
 
     public void setSkin(Skin skin) {
+      org.mozc.android.inputmethod.japanese.MozcLog.d("JAK SymbolInputView setting skin " + skin);
       Preconditions.checkNotNull(skin);
       this.skin = skin;
     }
@@ -375,7 +376,7 @@ public class SymbolInputView extends InOutAnimatedFrameLayout implements MemoryM
    * The differences from CandidateView.CandidateWordViewForConversion are
    * 1) this class scrolls horizontally 2) the layout algorithm is simpler.
    */
-  private static class SymbolCandidateView extends CandidateWordView {
+  private static class SymbolCandidateView extends org.mozc.android.inputmethod.japanese.CandidateWordView {
     private static final String DESCRIPTION_DELIMITER = "\n";
 
     private Optional<View> scrollGuideView = Optional.absent();
@@ -477,8 +478,8 @@ public class SymbolInputView extends InOutAnimatedFrameLayout implements MemoryM
   /**
    * Name to represent this view for logging.
    */
-  static final KeyboardSpecificationName SPEC_NAME =
-      new KeyboardSpecificationName("SYMBOL_INPUT_VIEW", 0, 1, 0);
+  static final org.mozc.android.inputmethod.japanese.KeyboardSpecificationName SPEC_NAME =
+      new org.mozc.android.inputmethod.japanese.KeyboardSpecificationName("SYMBOL_INPUT_VIEW", 0, 1, 0);
   // Source ID of the delete/enter button for logging usage stats.
   private static final int DELETE_BUTTON_SOURCE_ID = 1;
   private static final int ENTER_BUTTON_SOURCE_ID = 2;
@@ -499,10 +500,10 @@ public class SymbolInputView extends InOutAnimatedFrameLayout implements MemoryM
   @VisibleForTesting SharedPreferences sharedPreferences;
   @VisibleForTesting Optional<AlertDialog> emojiProviderDialog = Optional.absent();
 
-  private Optional<ViewEventListener> viewEventListener = Optional.absent();
-  private final KeyEventButtonTouchListener deleteKeyEventButtonTouchListener =
+  private Optional<org.mozc.android.inputmethod.japanese.ViewEventListener> viewEventListener = Optional.absent();
+  private final org.mozc.android.inputmethod.japanese.KeyEventButtonTouchListener deleteKeyEventButtonTouchListener =
       createDeleteKeyEventButtonTouchListener(getResources());
-  private final KeyEventButtonTouchListener enterKeyEventButtonTouchListener =
+  private final org.mozc.android.inputmethod.japanese.KeyEventButtonTouchListener enterKeyEventButtonTouchListener =
       createEnterKeyEventButtonTouchListener(getResources());
   private Optional<OnClickListener> closeButtonClickListener = Optional.absent();
   private Optional<OnClickListener> microphoneButtonClickListener = Optional.absent();
@@ -537,15 +538,15 @@ public class SymbolInputView extends InOutAnimatedFrameLayout implements MemoryM
         Preconditions.checkNotNull(PreferenceManager.getDefaultSharedPreferences(getContext()));
   }
 
-  private static KeyEventButtonTouchListener createDeleteKeyEventButtonTouchListener(
+  private static org.mozc.android.inputmethod.japanese.KeyEventButtonTouchListener createDeleteKeyEventButtonTouchListener(
       Resources resources) {
-    return new KeyEventButtonTouchListener(
+    return new org.mozc.android.inputmethod.japanese.KeyEventButtonTouchListener(
         DELETE_BUTTON_SOURCE_ID, resources.getInteger(R.integer.uchar_backspace));
   }
 
-  private static KeyEventButtonTouchListener createEnterKeyEventButtonTouchListener(
+  private static org.mozc.android.inputmethod.japanese.KeyEventButtonTouchListener createEnterKeyEventButtonTouchListener(
       Resources resources) {
-    return new KeyEventButtonTouchListener(
+    return new org.mozc.android.inputmethod.japanese.KeyEventButtonTouchListener(
         ENTER_BUTTON_SOURCE_ID, resources.getInteger(R.integer.uchar_linefeed));
   }
 
@@ -1114,8 +1115,8 @@ public class SymbolInputView extends InOutAnimatedFrameLayout implements MemoryM
     }
 
     if (newCategory == SymbolMajorCategory.NUMBER) {
-      CandidateView candidateView =
-          CandidateView.class.cast(findViewById(R.id.candidate_view_in_symbol_view));
+      org.mozc.android.inputmethod.japanese.CandidateView candidateView =
+          org.mozc.android.inputmethod.japanese.CandidateView.class.cast(findViewById(R.id.candidate_view_in_symbol_view));
       candidateView.clearAnimation();
       candidateView.setVisibility(View.GONE);
       candidateView.reset();
@@ -1204,8 +1205,8 @@ public class SymbolInputView extends InOutAnimatedFrameLayout implements MemoryM
   }
 
   void setEventListener(
-      ViewEventListener viewEventListener, OnClickListener closeButtonClickListener,
-      OnClickListener microphoneButtonClickListener) {
+          org.mozc.android.inputmethod.japanese.ViewEventListener viewEventListener, OnClickListener closeButtonClickListener,
+          OnClickListener microphoneButtonClickListener) {
     this.viewEventListener = Optional.of(viewEventListener);
     this.closeButtonClickListener = Optional.of(closeButtonClickListener);
     this.microphoneButtonClickListener = Optional.of(microphoneButtonClickListener);
@@ -1310,8 +1311,8 @@ public class SymbolInputView extends InOutAnimatedFrameLayout implements MemoryM
     }
     for (int i = 0; i < viewGroup.getChildCount(); ++i) {
       View view = viewGroup.getChildAt(i);
-      if (view instanceof MemoryManageable) {
-        MemoryManageable.class.cast(view).trimMemory();
+      if (view instanceof org.mozc.android.inputmethod.japanese.MemoryManageable) {
+        org.mozc.android.inputmethod.japanese.MemoryManageable.class.cast(view).trimMemory();
       }
     }
   }

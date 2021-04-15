@@ -103,6 +103,7 @@ import android.view.inputmethod.InputBinding;
 import android.view.inputmethod.InputConnection;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.EnumMap;
 import java.util.List;
@@ -127,7 +128,7 @@ public class MozcBaseService extends InputMethodService {
     @Override
     public void bindInput(InputBinding binding) {
       binding = new InputBinding(
-          ComposingTextTrackingInputConnection.newInstance(binding.getConnection()),
+          org.mozc.android.inputmethod.japanese.ComposingTextTrackingInputConnection.newInstance(binding.getConnection()),
           binding.getConnectionToken(),
           binding.getUid(),
           binding.getPid());
@@ -137,13 +138,13 @@ public class MozcBaseService extends InputMethodService {
     @Override
     public void startInput(InputConnection inputConnection, EditorInfo attribute) {
       super.startInput(
-          ComposingTextTrackingInputConnection.newInstance(inputConnection), attribute);
+          org.mozc.android.inputmethod.japanese.ComposingTextTrackingInputConnection.newInstance(inputConnection), attribute);
     }
 
     @Override
     public void restartInput(InputConnection inputConnection, EditorInfo attribute) {
       super.restartInput(
-          ComposingTextTrackingInputConnection.newInstance(inputConnection), attribute);
+          org.mozc.android.inputmethod.japanese.ComposingTextTrackingInputConnection.newInstance(inputConnection), attribute);
     }
   }
 
@@ -153,11 +154,11 @@ public class MozcBaseService extends InputMethodService {
 
     private RealFeedbackListener(Vibrator vibrator, AudioManager audioManager) {
       if (vibrator == null) {
-        MozcLog.w("vibrator must be non-null. Vibration is disabled.");
+        org.mozc.android.inputmethod.japanese.MozcLog.w("vibrator must be non-null. Vibration is disabled.");
       }
       this.vibrator = vibrator;
       if (audioManager == null) {
-        MozcLog.w("audioManager must be non-null. Sound feedback is disabled.");
+        org.mozc.android.inputmethod.japanese.MozcLog.w("audioManager must be non-null. Sound feedback is disabled.");
       }
       this.audioManager = audioManager;
     }
@@ -165,7 +166,7 @@ public class MozcBaseService extends InputMethodService {
     @Override
     public void onVibrate(long duration) {
       if (duration < 0) {
-        MozcLog.w("duration must be >= 0 but " + duration);
+        org.mozc.android.inputmethod.japanese.MozcLog.w("duration must be >= 0 but " + duration);
         return;
       }
       if (vibrator != null) {
@@ -175,7 +176,7 @@ public class MozcBaseService extends InputMethodService {
 
     @Override
     public void onSound(int soundEffectType, float volume) {
-      if (audioManager != null && soundEffectType != FeedbackManager.FeedbackEvent.NO_SOUND) {
+      if (audioManager != null && soundEffectType != org.mozc.android.inputmethod.japanese.FeedbackManager.FeedbackEvent.NO_SOUND) {
         audioManager.playSoundEffect(soundEffectType, volume);
       }
     }
@@ -205,7 +206,7 @@ public class MozcBaseService extends InputMethodService {
           sessionExecutor.readAllFromStorage(STORAGE_TYPE_MAP.get(majorCategory));
       List<String> result = new ArrayList<String>(historyList.size());
       for (ByteString value : historyList) {
-        result.add(MozcUtil.utf8CStyleByteStringToString(value));
+        result.add(org.mozc.android.inputmethod.japanese.MozcUtil.utf8CStyleByteStringToString(value));
       }
       return result;
     }
@@ -222,7 +223,7 @@ public class MozcBaseService extends InputMethodService {
   }
 
   // Called back from ViewManager
-  @VisibleForTesting class MozcEventListener implements ViewEventListener {
+  @VisibleForTesting class MozcEventListener implements org.mozc.android.inputmethod.japanese.ViewEventListener {
     @Override
     public void onConversionCandidateSelected(int candidateId, Optional<Integer> rowIndex) {
       sessionExecutor.submitCandidate(candidateId, rowIndex, renderResultCallback);
@@ -263,7 +264,7 @@ public class MozcBaseService extends InputMethodService {
       }
       inputConnection.beginBatchEdit();
       try {
-        inputConnection.commitText(text, MozcUtil.CURSOR_POSITION_TAIL);
+        inputConnection.commitText(text, org.mozc.android.inputmethod.japanese.MozcUtil.CURSOR_POSITION_TAIL);
       } finally {
         inputConnection.endBatchEdit();
       }
@@ -368,7 +369,7 @@ public class MozcBaseService extends InputMethodService {
 
     @Override
     public void onUpdateKeyboardLayoutAdjustment(
-        ViewManagerInterface.LayoutAdjustment layoutAdjustment) {
+        org.mozc.android.inputmethod.japanese.ViewManagerInterface.LayoutAdjustment layoutAdjustment) {
       Preconditions.checkNotNull(layoutAdjustment);
       Configuration configuration = getConfiguration();
       if (sharedPreferences == null || configuration == null) {
@@ -547,8 +548,9 @@ public class MozcBaseService extends InputMethodService {
 
   // A manager for all views and feedbacks.
   @VisibleForTesting
-  public ViewManagerInterface viewManager;
-  @VisibleForTesting FeedbackManager feedbackManager;
+  public org.mozc.android.inputmethod.japanese.ViewManagerInterface viewManager;
+  @VisibleForTesting
+  org.mozc.android.inputmethod.japanese.FeedbackManager feedbackManager;
   @VisibleForTesting SymbolHistoryStorage symbolHistoryStorage;
 
   @VisibleForTesting SharedPreferences sharedPreferences;
@@ -595,12 +597,12 @@ public class MozcBaseService extends InputMethodService {
 
   private Optional<Integer> originalWindowAnimationResourceId = Optional.absent();
 
-  private ApplicationCompatibility applicationCompatibility =
-      ApplicationCompatibility.getDefaultInstance();
+  private org.mozc.android.inputmethod.japanese.ApplicationCompatibility applicationCompatibility =
+      org.mozc.android.inputmethod.japanese.ApplicationCompatibility.getDefaultInstance();
 
   // Listener called by views.
   // Held for testing.
-  private ViewEventListener eventListener;
+  private org.mozc.android.inputmethod.japanese.ViewEventListener eventListener;
 
   @SuppressWarnings("deprecation")
   @SuppressLint("NewApi")
@@ -609,12 +611,14 @@ public class MozcBaseService extends InputMethodService {
     if (Build.VERSION.SDK_INT >= 17) {
       enableHardwareAcceleration();
     }
+    org.mozc.android.inputmethod.japanese.MozcLog.d("JAK init version" + Build.VERSION.SDK_INT);
   }
 
   @Override
   public void onBindInput() {
     super.onBindInput();
     inputBound = true;
+    org.mozc.android.inputmethod.japanese.MozcLog.d("JAK bound");
   }
 
   @Override
@@ -637,18 +641,21 @@ public class MozcBaseService extends InputMethodService {
 
   @Override
   public MozcInputMethod onCreateInputMethodInterface() {
+    org.mozc.android.inputmethod.japanese.MozcLog.d("JAK creating inputmethod");
     return new MozcInputMethod();
+
   }
 
   @Override
   public void onCreate() {
     // Note: super.onCreate() is invoked in onCreateInternal. So, do not call it, here.
-    MozcLog.d("start MozcService#onCreate " + System.nanoTime());
+    org.mozc.android.inputmethod.japanese.MozcLog.d("JAK start MozcService#onCreate " + System.nanoTime());
 
     // TODO(hidehiko): Restructure around initialization code in order to make tests stable.
     // Callback object mainly used by views.
     MozcEventListener eventListener = new MozcEventListener();
     SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+    org.mozc.android.inputmethod.japanese.MozcLog.d("JAK onCreate with prefs = " + sharedPreferences.getAll());
     Preconditions.checkNotNull(sharedPreferences);
     SessionExecutor sessionExecutor =
         SessionExecutor.getInstanceInitializedIfNecessary(
@@ -656,7 +663,8 @@ public class MozcBaseService extends InputMethodService {
     onCreateInternal(eventListener, null, sharedPreferences, getConfiguration(),
                      sessionExecutor);
 
-    MozcLog.d("end MozcService#onCreate " + System.nanoTime());
+    org.mozc.android.inputmethod.japanese.MozcLog.d("JAK end MozcService#onCreate " + System.nanoTime());
+    org.mozc.android.inputmethod.japanese.MozcLog.d("JAK onCreate with prefs after session created = " + sharedPreferences.getAll());
   }
 
   @Override
@@ -676,13 +684,13 @@ public class MozcBaseService extends InputMethodService {
   }
 
   @VisibleForTesting
-  void onCreateInternal(ViewEventListener eventListener, @Nullable ViewManagerInterface viewManager,
+  void onCreateInternal(org.mozc.android.inputmethod.japanese.ViewEventListener eventListener, @Nullable org.mozc.android.inputmethod.japanese.ViewManagerInterface viewManager,
                         @Nullable SharedPreferences sharedPreferences,
                         Configuration deviceConfiguration, SessionExecutor sessionExecutor) {
     super.onCreate();
-
+    org.mozc.android.inputmethod.japanese.MozcLog.d("JAK creating internal");
     Context context = getApplicationContext();
-    isDebugBuild = MozcUtil.isDebug(context);
+    isDebugBuild = org.mozc.android.inputmethod.japanese.MozcUtil.isDebug(context);
 
     // TODO(hidehiko): Split following methods by functionalities to improve test coverage and
     //   test stableness.
@@ -702,6 +710,9 @@ public class MozcBaseService extends InputMethodService {
     sendSyncDataCommandHandler.sendEmptyMessageDelayed(
         SendSyncDataCommandHandler.WHAT, SendSyncDataCommandHandler.SYNC_DATA_COMMAND_PERIOD);
     this.sharedPreferences = sharedPreferences;
+
+    org.mozc.android.inputmethod.japanese.MozcLog.d("JAK onCreateInternal = " + new ClientSidePreference(sharedPreferences, getResources(), deviceConfiguration.orientation));
+    org.mozc.android.inputmethod.japanese.MozcLog.d("JAK onCreateInternal = " + sharedPreferences.getAll());
   }
 
   /**
@@ -709,6 +720,7 @@ public class MozcBaseService extends InputMethodService {
    */
   private void prepareEveryTime(
       @Nullable SharedPreferences sharedPreferences, Configuration deviceConfiguration) {
+    org.mozc.android.inputmethod.japanese.MozcLog.d("JAK prepare every time");
     boolean isLogging = sharedPreferences != null
         && sharedPreferences.getBoolean(PREF_TWEAK_LOGGING_PROTOCOL_BUFFERS, false);
     // Force to initialize here.
@@ -724,12 +736,13 @@ public class MozcBaseService extends InputMethodService {
         null, null, currentKeyboardSpecification, deviceConfiguration,
         Collections.<TouchEvent>emptyList());
     if (sharedPreferences != null) {
+      org.mozc.android.inputmethod.japanese.MozcLog.d("JAK propagating client side prefs = " + new ClientSidePreference(sharedPreferences, getResources(), deviceConfiguration.orientation));
       propagateClientSidePreference(
           new ClientSidePreference(
               sharedPreferences, getResources(), deviceConfiguration.orientation));
       // TODO(hidehiko): here we just set the config based on preferences. When we start
       //   to support sync on Android, we need to revisit the config related design.
-      sessionExecutor.setConfig(ConfigUtil.toConfig(sharedPreferences));
+      sessionExecutor.setConfig(org.mozc.android.inputmethod.japanese.ConfigUtil.toConfig(sharedPreferences));
       sessionExecutor.preferenceUsageStatsEvent(sharedPreferences, getResources());
     }
   }
@@ -737,37 +750,39 @@ public class MozcBaseService extends InputMethodService {
   /**
    * Prepares something which should be done only once.
    */
-  private void prepareOnce(ViewEventListener eventListener,
-      SymbolHistoryStorage symbolHistoryStorage,
-      @Nullable ViewManagerInterface viewManager,
-      @Nullable SharedPreferences sharedPreferences) {
+  private void prepareOnce(org.mozc.android.inputmethod.japanese.ViewEventListener eventListener,
+                           SymbolHistoryStorage symbolHistoryStorage,
+                           @Nullable org.mozc.android.inputmethod.japanese.ViewManagerInterface viewManager,
+                           @Nullable SharedPreferences sharedPreferences) {
+    org.mozc.android.inputmethod.japanese.MozcLog.d("JAK prepare once");
     Context context = getApplicationContext();
     Optional<Intent> forwardIntent =
-        ApplicationInitializerFactory.createInstance(this).initialize(
-            MozcUtil.isSystemApplication(context),
-            MozcUtil.isDevChannel(context),
-            DependencyFactory.getDependency(getApplicationContext()).isWelcomeActivityPreferrable(),
-            MozcUtil.getAbiIndependentVersionCode(context),
+        org.mozc.android.inputmethod.japanese.ApplicationInitializerFactory.createInstance(this).initialize(
+            org.mozc.android.inputmethod.japanese.MozcUtil.isSystemApplication(context),
+            org.mozc.android.inputmethod.japanese.MozcUtil.isDevChannel(context),
+            org.mozc.android.inputmethod.japanese.DependencyFactory.getDependency(getApplicationContext()).isWelcomeActivityPreferrable(),
+            org.mozc.android.inputmethod.japanese.MozcUtil.getAbiIndependentVersionCode(context),
             LauncherIconManagerFactory.getDefaultInstance(),
             PreferenceUtil.getDefaultPreferenceManagerStatic());
     if (forwardIntent.isPresent()) {
+      org.mozc.android.inputmethod.japanese.MozcLog.d("JAK prepareOnce - start activity");
       startActivity(forwardIntent.get());
     }
 
     // Create a ViewManager.
     if (viewManager == null) {
       ImeSwitcher imeSwitcher = ImeSwitcherFactory.getImeSwitcher(this);
-      viewManager = DependencyFactory.getDependency(
+      viewManager = org.mozc.android.inputmethod.japanese.DependencyFactory.getDependency(
           getApplicationContext()).createViewManager(
               getApplicationContext(),
               eventListener,
               symbolHistoryStorage,
               imeSwitcher,
-              new MozcMenuDialogListenerImpl(this, eventListener));
+              new org.mozc.android.inputmethod.japanese.MozcMenuDialogListenerImpl(this, eventListener));
     }
 
     // Setup FeedbackManager.
-    feedbackManager = new FeedbackManager(new RealFeedbackListener(
+    feedbackManager = new org.mozc.android.inputmethod.japanese.FeedbackManager(new RealFeedbackListener(
         Vibrator.class.cast(getSystemService(Context.VIBRATOR_SERVICE)),
         AudioManager.class.cast(getSystemService(Context.AUDIO_SERVICE))));
 
@@ -787,9 +802,10 @@ public class MozcBaseService extends InputMethodService {
 
   @Override
   public View onCreateInputView() {
-    MozcLog.d("start MozcService#onCreateInputView " + System.nanoTime());
+    org.mozc.android.inputmethod.japanese.MozcLog.d("start MozcService#onCreateInputView " + System.nanoTime());
+    org.mozc.android.inputmethod.japanese.MozcLog.d("JAK - " + PreferenceManager.getDefaultSharedPreferences(this).getAll());
     View inputView = viewManager.createMozcView(this);
-    MozcLog.d("end MozcService#onCreateInputView " + System.nanoTime());
+    org.mozc.android.inputmethod.japanese.MozcLog.d("end MozcService#onCreateInputView " + System.nanoTime());
     return inputView;
   }
 
@@ -815,7 +831,7 @@ public class MozcBaseService extends InputMethodService {
     // Omit rendering because the input view will soon disappear.
     resetContext();
     selectionTracker.onFinishInput();
-    applicationCompatibility = ApplicationCompatibility.getDefaultInstance();
+    applicationCompatibility = org.mozc.android.inputmethod.japanese.ApplicationCompatibility.getDefaultInstance();
     resetWindowAnimation();
 
     super.onFinishInput();
@@ -824,8 +840,10 @@ public class MozcBaseService extends InputMethodService {
   @Override
   public void onStartInput(EditorInfo attribute, boolean restarting) {
     super.onStartInput(attribute, restarting);
+    org.mozc.android.inputmethod.japanese.MozcLog.d("JAK-123456 onStartInput. prefs = " + propagatedClientSidePreference);
+    org.mozc.android.inputmethod.japanese.MozcLog.d("JAK onStartInput prefs = " + PreferenceManager.getDefaultSharedPreferences(this).getAll());
 
-    applicationCompatibility = ApplicationCompatibility.getInstance(attribute);
+    applicationCompatibility = org.mozc.android.inputmethod.japanese.ApplicationCompatibility.getInstance(attribute);
 
     // Update full screen mode, because the application may be changed.
     viewManager.setFullscreenMode(
@@ -880,7 +898,7 @@ public class MozcBaseService extends InputMethodService {
     }
     if (result != null) {
       // Found the pending mushroom application result to the connecting field. Commit it.
-      connection.commitText(result, MozcUtil.CURSOR_POSITION_TAIL);
+      connection.commitText(result, org.mozc.android.inputmethod.japanese.MozcUtil.CURSOR_POSITION_TAIL);
       // And clear the proxy.
       // Previous implementation cleared the proxy even when the replace result is NOT found.
       // This caused incompatible mushroom issue because the activity transition gets sometimes
@@ -921,13 +939,14 @@ public class MozcBaseService extends InputMethodService {
     }
 
     // TODO(hidehiko): Refine the heuristic to check isWebEditText related stuff.
-    MozcLog.d("inputType: " + editorInfo.inputType);
+    org.mozc.android.inputmethod.japanese.MozcLog.d("inputType: " + editorInfo.inputType);
     int variation = editorInfo.inputType & InputType.TYPE_MASK_VARIATION;
     return variation == InputType.TYPE_TEXT_VARIATION_WEB_EDIT_TEXT;
   }
 
   @Override
   public void onStartInputView(EditorInfo attribute, boolean restarting) {
+    org.mozc.android.inputmethod.japanese.MozcLog.d("JAK onStartInputView");
     InputConnection inputConnection = getCurrentInputConnection();
     if (inputConnection != null && Build.VERSION.SDK_INT >= 21) {
       viewManager.setCursorAnchorInfoEnabled(enableCursorAnchorInfo(inputConnection));
@@ -959,7 +978,7 @@ public class MozcBaseService extends InputMethodService {
 
   static InputFieldType getInputFieldType(EditorInfo attribute) {
     int inputType = attribute.inputType;
-    if (MozcUtil.isPasswordField(inputType)) {
+    if (org.mozc.android.inputmethod.japanese.MozcUtil.isPasswordField(inputType)) {
       return InputFieldType.PASSWORD;
     }
     int inputClass = inputType & InputType.TYPE_MASK_CLASS;
@@ -1007,8 +1026,8 @@ public class MozcBaseService extends InputMethodService {
   @SuppressLint("DefaultLocale")
   @VisibleForTesting
   boolean onKeyDownInternal(int keyCode, KeyEvent event, Configuration configuration) {
-    if (MozcLog.isLoggable(Log.DEBUG)) {
-      MozcLog.d(
+    if (org.mozc.android.inputmethod.japanese.MozcLog.isLoggable(Log.DEBUG)) {
+      org.mozc.android.inputmethod.japanese.MozcLog.d(
           String.format(
               "onKeyDown keyCode:0x%x, metaState:0x%x, scanCode:0x%x, uniCode:0x%x, deviceId:%d",
               event.getKeyCode(), event.getMetaState(), event.getScanCode(),
@@ -1035,7 +1054,7 @@ public class MozcBaseService extends InputMethodService {
     // Push the event to the asynchronous execution queue if it should be processed
     // directly in the view.
     if (viewManager.isKeyConsumedOnViewAsynchronously(event)) {
-      sessionExecutor.sendKeyEvent(KeycodeConverter.getKeyEventInterface(event),
+      sessionExecutor.sendKeyEvent(org.mozc.android.inputmethod.japanese.KeycodeConverter.getKeyEventInterface(event),
                                    sendKeyToViewCallback);
       return true;
     }
@@ -1063,12 +1082,12 @@ public class MozcBaseService extends InputMethodService {
         // See also comments described below.
         if (event.getKeyCode() == KeyEvent.KEYCODE_BACK) {
           sessionExecutor.sendKeyEvent(
-              KeycodeConverter.getKeyEventInterface(event), sendKeyToApplicationCallback);
+              org.mozc.android.inputmethod.japanese.KeycodeConverter.getKeyEventInterface(event), sendKeyToApplicationCallback);
           return true;
         }
       } else {
         if (viewManager.isKeyConsumedOnViewAsynchronously(event)) {
-          sessionExecutor.sendKeyEvent(KeycodeConverter.getKeyEventInterface(event),
+          sessionExecutor.sendKeyEvent(org.mozc.android.inputmethod.japanese.KeycodeConverter.getKeyEventInterface(event),
                                        sendKeyToViewCallback);
           return true;
         }
@@ -1077,8 +1096,8 @@ public class MozcBaseService extends InputMethodService {
         // Currently the server does not consume UP event for not meta keys.
         // For meta keys, to guarantee that this up event is sent to InputConnection after down key,
         // this is sent to evaluation handler.
-        if (KeycodeConverter.isMetaKey(event)) {
-          sessionExecutor.sendKeyEvent(KeycodeConverter.getKeyEventInterface(event),
+        if (org.mozc.android.inputmethod.japanese.KeycodeConverter.isMetaKey(event)) {
+          sessionExecutor.sendKeyEvent(org.mozc.android.inputmethod.japanese.KeycodeConverter.getKeyEventInterface(event),
                                        sendKeyToApplicationCallback);
         }
         return true;
@@ -1135,7 +1154,7 @@ public class MozcBaseService extends InputMethodService {
       List<TouchEvent> touchEventList) {
     // Send Request to change composition table.
     sessionExecutor.updateRequest(
-        MozcUtil.getRequestBuilder(getResources(), keyboardSpecification, configuration).build(),
+        org.mozc.android.inputmethod.japanese.MozcUtil.getRequestBuilder(getResources(), keyboardSpecification, configuration).build(),
         touchEventList);
     if (mozcKeyEvent == null) {
       // Change composition mode.
@@ -1259,7 +1278,7 @@ public class MozcBaseService extends InputMethodService {
     // To avoid such situation, we should send the key event back to application. b/13238551
     // The command itself is consumed by Mozc server, so we should NOT put a return statement here.
     if (keyEvent != null && keyEvent.getNativeEvent().isPresent()
-        && KeycodeConverter.isMetaKey(keyEvent.getNativeEvent().get())) {
+        && org.mozc.android.inputmethod.japanese.KeycodeConverter.isMetaKey(keyEvent.getNativeEvent().get())) {
       sendKeyEvent(keyEvent);
     }
 
@@ -1308,19 +1327,19 @@ public class MozcBaseService extends InputMethodService {
 
     if (nativeKeyEvent.isPresent() && inputConnection != null) {
       // Meta keys are from this.onKeyDown/Up so fallback each time.
-      if (KeycodeConverter.isMetaKey(nativeKeyEvent.get())) {
+      if (org.mozc.android.inputmethod.japanese.KeycodeConverter.isMetaKey(nativeKeyEvent.get())) {
         inputConnection.sendKeyEvent(createKeyEvent(
-            nativeKeyEvent.get(), MozcUtil.getUptimeMillis(),
+            nativeKeyEvent.get(), org.mozc.android.inputmethod.japanese.MozcUtil.getUptimeMillis(),
             nativeKeyEvent.get().getAction(), nativeKeyEvent.get().getRepeatCount()));
         return;
       }
 
       // Other keys are from this.onKeyDown so create dummy Down/Up events.
       inputConnection.sendKeyEvent(createKeyEvent(
-          nativeKeyEvent.get(), MozcUtil.getUptimeMillis(), KeyEvent.ACTION_DOWN, 0));
+          nativeKeyEvent.get(), org.mozc.android.inputmethod.japanese.MozcUtil.getUptimeMillis(), KeyEvent.ACTION_DOWN, 0));
 
       inputConnection.sendKeyEvent(createKeyEvent(
-          nativeKeyEvent.get(), MozcUtil.getUptimeMillis(), KeyEvent.ACTION_UP, 0));
+          nativeKeyEvent.get(), org.mozc.android.inputmethod.japanese.MozcUtil.getUptimeMillis(), KeyEvent.ACTION_UP, 0));
       return;
     }
 
@@ -1393,12 +1412,12 @@ public class MozcBaseService extends InputMethodService {
     if (leftRange < 0 || rightRange < 0) {
       // If the range does not include the current position, do nothing
       // because Android's API does not expect such situation.
-      MozcLog.w("Deletion range has unsupported parameters: " + range.toString());
+      org.mozc.android.inputmethod.japanese.MozcLog.w("Deletion range has unsupported parameters: " + range.toString());
       return;
     }
 
     if (!inputConnection.deleteSurroundingText(leftRange, rightRange)) {
-      MozcLog.e("Failed to delete surrounding text.");
+      org.mozc.android.inputmethod.japanese.MozcLog.e("Failed to delete surrounding text.");
     }
   }
 
@@ -1413,18 +1432,18 @@ public class MozcBaseService extends InputMethodService {
       return;
     }
 
-    int position = MozcUtil.CURSOR_POSITION_TAIL;
+    int position = org.mozc.android.inputmethod.japanese.MozcUtil.CURSOR_POSITION_TAIL;
     if (output.getResult().hasCursorOffset()) {
       if (output.getResult().getCursorOffset()
           == -outputText.codePointCount(0, outputText.length())) {
-        position = MozcUtil.CURSOR_POSITION_HEAD;
+        position = org.mozc.android.inputmethod.japanese.MozcUtil.CURSOR_POSITION_HEAD;
       } else {
-        MozcLog.e("Unsupported position: " + output.getResult().toString());
+        org.mozc.android.inputmethod.japanese.MozcLog.e("Unsupported position: " + output.getResult().toString());
       }
     }
 
     if (!inputConnection.commitText(outputText, position)) {
-      MozcLog.e("Failed to commit text.");
+      org.mozc.android.inputmethod.japanese.MozcLog.e("Failed to commit text.");
     }
   }
 
@@ -1447,7 +1466,7 @@ public class MozcBaseService extends InputMethodService {
       if (input.getType() != Input.CommandType.SEND_COMMAND
           || input.getCommand().getType() != SessionCommand.CommandType.SWITCH_INPUT_MODE) {
         if (!inputConnection.setComposingText("", 0)) {
-          MozcLog.e("Failed to set composing text.");
+          org.mozc.android.inputmethod.japanese.MozcLog.e("Failed to set composing text.");
         }
       }
       return;
@@ -1495,9 +1514,9 @@ public class MozcBaseService extends InputMethodService {
 
     // System cursor will be moved to the tail of preedit.
     // It triggers onUpdateSelection again.
-    int cursorPosition = cursor > 0 ? MozcUtil.CURSOR_POSITION_TAIL : 0;
+    int cursorPosition = cursor > 0 ? org.mozc.android.inputmethod.japanese.MozcUtil.CURSOR_POSITION_TAIL : 0;
     if (!inputConnection.setComposingText(builder, cursorPosition)) {
-      MozcLog.e("Failed to set composing text.");
+      org.mozc.android.inputmethod.japanese.MozcLog.e("Failed to set composing text.");
     }
   }
 
@@ -1526,7 +1545,7 @@ public class MozcBaseService extends InputMethodService {
     }
 
     if (!inputConnection.setSelection(caretPosition, caretPosition)) {
-      MozcLog.e("Failed to set selection.");
+      org.mozc.android.inputmethod.japanese.MozcLog.e("Failed to set selection.");
     }
   }
 
@@ -1551,8 +1570,9 @@ public class MozcBaseService extends InputMethodService {
    */
   @VisibleForTesting void propagateClientSidePreference(ClientSidePreference newPreference) {
     // TODO(matsuzakit): Receive a Config to reflect the current device configuration.
+    org.mozc.android.inputmethod.japanese.MozcLog.d("JAK propagateClientSidePreference " + newPreference + "\n" + Arrays.asList(Thread.currentThread().getStackTrace()));
     if (newPreference == null) {
-      MozcLog.e("newPreference must be non-null. No update is performed.");
+      org.mozc.android.inputmethod.japanese.MozcLog.e("newPreference must be non-null. No update is performed.");
       return;
     }
     ClientSidePreference oldPreference = propagatedClientSidePreference;
@@ -1654,7 +1674,7 @@ public class MozcBaseService extends InputMethodService {
     @Override
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
       if (isDebugBuild) {
-        MozcLog.d("onSharedPreferenceChanged : " + key);
+        org.mozc.android.inputmethod.japanese.MozcLog.d("onSharedPreferenceChanged : " + key);
       }
       if (key.startsWith(PREF_TWEAK_PREFIX)) {
         // If the key belongs to PREF_TWEAK group, re-create SessionHandler and view.
@@ -1662,10 +1682,11 @@ public class MozcBaseService extends InputMethodService {
         setInputView(onCreateInputView());
         return;
       }
+      org.mozc.android.inputmethod.japanese.MozcLog.d("JAK propagating client side prefs = " + new ClientSidePreference(sharedPreferences, getResources(), getConfiguration().orientation));
       propagateClientSidePreference(
           new ClientSidePreference(
               sharedPreferences, getResources(), getConfiguration().orientation));
-      sessionExecutor.setConfig(ConfigUtil.toConfig(sharedPreferences));
+      sessionExecutor.setConfig(org.mozc.android.inputmethod.japanese.ConfigUtil.toConfig(sharedPreferences));
       sessionExecutor.preferenceUsageStatsEvent(sharedPreferences, getResources());
     }
   }
@@ -1697,12 +1718,13 @@ public class MozcBaseService extends InputMethodService {
     selectionTracker.onConfigurationChanged();
 
     sessionExecutor.updateRequest(
-        MozcUtil.getRequestBuilder(getResources(), currentKeyboardSpecification, newConfig).build(),
+        org.mozc.android.inputmethod.japanese.MozcUtil.getRequestBuilder(getResources(), currentKeyboardSpecification, newConfig).build(),
         Collections.<TouchEvent>emptyList());
 
     // NOTE : This method is not called at the time when the service is started.
     // Based on newConfig, client side preferences should be sent
     // because they change based on device config.
+    org.mozc.android.inputmethod.japanese.MozcLog.d("JAK propagating client side prefs = " + new ClientSidePreference(sharedPreferences, getResources(), getConfiguration().orientation));
     propagateClientSidePreference(new ClientSidePreference(
         Preconditions.checkNotNull(PreferenceManager.getDefaultSharedPreferences(this)),
         getResources(), newConfig.orientation));
@@ -1721,9 +1743,9 @@ public class MozcBaseService extends InputMethodService {
   void onUpdateSelectionInternal(int oldSelStart, int oldSelEnd,
                                  int newSelStart, int newSelEnd,
                                  int candidatesStart, int candidatesEnd) {
-    MozcLog.d("start MozcService#onUpdateSelectionInternal " + System.nanoTime());
+    org.mozc.android.inputmethod.japanese.MozcLog.d("start MozcService#onUpdateSelectionInternal " + System.nanoTime());
     if (isDebugBuild) {
-      MozcLog.d("selection updated: [" + oldSelStart + ":" + oldSelEnd + "] "
+      org.mozc.android.inputmethod.japanese.MozcLog.d("selection updated: [" + oldSelStart + ":" + oldSelEnd + "] "
                     + "to: [" + newSelStart + ":" + newSelEnd + "] "
                     + "candidates: [" + candidatesStart + ":" + candidatesEnd + "]");
     }
@@ -1732,7 +1754,7 @@ public class MozcBaseService extends InputMethodService {
         oldSelStart, oldSelEnd, newSelStart, newSelEnd, candidatesStart, candidatesEnd,
         applicationCompatibility.isIgnoringMoveToTail());
     if (isDebugBuild) {
-      MozcLog.d(selectionTracker.toString());
+      org.mozc.android.inputmethod.japanese.MozcLog.d(selectionTracker.toString());
     }
     switch (updateStatus) {
       case SelectionTracker.DO_NOTHING:
@@ -1767,7 +1789,7 @@ public class MozcBaseService extends InputMethodService {
         break;
     }
 
-    MozcLog.d("end MozcService#onUpdateSelectionInternal " + System.nanoTime());
+    org.mozc.android.inputmethod.japanese.MozcLog.d("end MozcService#onUpdateSelectionInternal " + System.nanoTime());
   }
 
   @Override
@@ -1783,7 +1805,7 @@ public class MozcBaseService extends InputMethodService {
   private void trimMemory() {
     // We must guarantee the contract of MemoryManageable#trimMemory.
     if (!isInputViewShown()) {
-      MozcLog.d("Trimming memory");
+      org.mozc.android.inputmethod.japanese.MozcLog.d("Trimming memory");
       sessionExecutor.deleteSession();
       viewManager.trimMemory();
     }
@@ -1796,7 +1818,7 @@ public class MozcBaseService extends InputMethodService {
   }
 
   @VisibleForTesting
-  ViewEventListener getViewEventListener() {
+  org.mozc.android.inputmethod.japanese.ViewEventListener getViewEventListener() {
     return eventListener;
   }
 

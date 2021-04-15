@@ -97,7 +97,7 @@
         android:title="@string/pref_use_portrait_keyboard_settings_for_landscape_title" />
 
     <org.mozc.android.inputmethod.japanese.preference.KeyboardLayoutPreference
-        android:defaultValue="TWELVE_KEYS"
+        android:defaultValue="QWERTY"
         android:key="pref_landscape_keyboard_layout_key"
         android:layout="@layout/pref_large_widget"
         android:summary="@string/pref_keyboard_layout_description"
