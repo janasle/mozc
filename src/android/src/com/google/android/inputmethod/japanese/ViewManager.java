@@ -144,6 +144,9 @@ public class ViewManager implements org.mozc.android.inputmethod.japanese.ViewMa
       return;
     }
 
+    /*
+    Hide these for now.
+
     if (primaryCode == keycodeMenuDialog || primaryCode == keycodeImePickerDialog) {
       // We need to reset the keyboard, otherwise it would miss the ACTION_UP event.
       if (mozcView != null) {
@@ -157,6 +160,7 @@ public class ViewManager implements org.mozc.android.inputmethod.japanese.ViewMa
       }
       return;
     }
+    */
 
     if (primaryCode == keycodeSymbol) {
       if (mozcView != null) {
